@@ -1,6 +1,6 @@
 import 'package:app_admin_pizzeria/helper.dart';
 import 'package:app_admin_pizzeria/main.dart';
-import 'package:app_admin_pizzeria/widget/top_screen.dart';
+import 'package:app_admin_pizzeria/widget/top_banner.dart';
 import 'package:app_admin_pizzeria/widget/my_snackbar.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -41,7 +41,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   style: Theme.of(context)
                       .textTheme
                       .bodySmall!
-                      .copyWith(color: Colors.grey[700]),
+                      .copyWith(color: Colors.white),
                   textAlign: TextAlign.center,
                 ),
 
@@ -300,6 +300,7 @@ Widget textField(controller, final String hintText, final bool obscureText) {
     child: TextFormField(
       keyboardType:
           obscureText ? TextInputType.text : TextInputType.emailAddress,
+      cursorColor: Colors.black,
       autocorrect: false,
       controller: controller,
       obscureText: obscureText,

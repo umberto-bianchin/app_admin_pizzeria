@@ -1,3 +1,4 @@
+import 'package:app_admin_pizzeria/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -17,7 +18,13 @@ class SideMenu extends StatelessWidget {
           DrawerListTile(
             title: "Dashboard",
             svgSrc: "assets/icons/menu_dashboard.svg",
-            press: () {},
+            press: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const MainScreen(),
+                ),
+              );
+            },
           ),
           DrawerListTile(
             title: "Mappa",
