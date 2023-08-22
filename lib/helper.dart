@@ -24,7 +24,7 @@ void saveUserInfos({required String address, required String phone}) {
 void saveAdmin() {
   var firebaseUser = FirebaseAuth.instance.currentUser;
   firestoreInstance.collection("access").doc(firebaseUser!.uid).set({
-    "level": "admin",
+    'admin': true,
   }, SetOptions(merge: true));
 }
 
@@ -47,4 +47,8 @@ Future<Map<String, String>> getUserInfo() async {
     "address": "",
     "phone": "",
   };
+}
+
+String getUserMail() {
+  return FirebaseAuth.instance.currentUser!.email!;
 }

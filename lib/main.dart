@@ -1,18 +1,29 @@
-import 'package:app_admin_pizzeria/admin.dart';
 import 'package:app_admin_pizzeria/auth.dart';
+import 'package:app_admin_pizzeria/constants.dart';
+import 'package:app_admin_pizzeria/providers/menu_controller.dart';
+import 'package:app_admin_pizzeria/screens/main_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => MenuAppController()),
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -21,18 +32,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        useMaterial3: true,
-        primaryColor: const Color.fromARGB(255, 4, 167, 113),
-        textTheme: const TextTheme(
-          titleLarge: TextStyle(
-              fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
-          titleMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          titleSmall: TextStyle(fontSize: 18),
-          bodyLarge: TextStyle(fontSize: 20),
-          bodyMedium: TextStyle(fontSize: 15),
-          bodySmall: TextStyle(fontSize: 16),
-        ),
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: bgColor,
+        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)
+            .apply(bodyColor: Colors.white),
+        canvasColor: secondaryColor,
       ),
       home: Scaffold(
         appBar: AppBar(
@@ -48,7 +52,7 @@ class MyApp extends StatelessWidget {
                 } else if (snapshot.hasError) {
                   return const Text("Exception");
                 } else if (snapshot.hasData) {
-                  return const AdminScreen();
+                  return const MainScreen();
                 } else {
                   return const AuthScreen();
                 }

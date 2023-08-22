@@ -216,6 +216,8 @@ class _AuthScreenState extends State<AuthScreen> {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim());
+      if (mounted) Navigator.pop(context);
+
       saveAdmin();
     } on FirebaseAuthException catch (e) {
       String error = e.code;
@@ -235,8 +237,6 @@ class _AuthScreenState extends State<AuthScreen> {
 
       return;
     }
-
-    navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 
   Future resetPassword() async {

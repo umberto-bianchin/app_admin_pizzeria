@@ -14,7 +14,7 @@ exports.updateAccess = functions.firestore
 
     // Set custom user claims on this update.
     return admin.auth().setCustomUserClaims(
-               context.params.accessId, customClaims)
+               context.params.accessId, { admin: true })
     .then(() => {
       console.log("Done!")
     })
