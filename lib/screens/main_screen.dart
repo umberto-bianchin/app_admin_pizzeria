@@ -1,18 +1,29 @@
-import 'package:app_admin_pizzeria/providers/menu_controller.dart';
 import 'package:app_admin_pizzeria/responsive.dart';
 import 'package:app_admin_pizzeria/screens/dashboard_screen.dart';
+import 'package:app_admin_pizzeria/screens/maps_screen.dart';
+import 'package:app_admin_pizzeria/screens/menu_screen.dart';
+import 'package:app_admin_pizzeria/screens/order_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
+import '../constants.dart';
+import '../widget/header.dart';
 import '../widget/side_menu.dart';
 
 class MainScreen extends StatelessWidget {
-  const MainScreen({super.key});
+  const MainScreen({super.key, required this.index});
+
+  final int index;
+
+  final List<Widget> displayed = const [
+    DashboardScreen(),
+    MapScreen(),
+    MenuScreen(),
+    OrderScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: context.read<MenuAppController>().scaffoldKey,
       drawer: const SideMenu(),
       body: SafeArea(
         child: Row(
@@ -25,10 +36,19 @@ class MainScreen extends StatelessWidget {
                 // and it takes 1/6 part of the screen
                 child: SideMenu(),
               ),
-            const Expanded(
+            Expanded(
               // It takes 5/6 part of the screen
               flex: 5,
-              child: DashboardScreen(),
+              child: SingleChildScrollView(
+                primary: false,
+                padding: const EdgeInsets.all(defaultPadding),
+                child: Column(
+                  children: [
+                    const Header(),
+                    displayed[index],
+                  ],
+                ),
+              ),
             ),
           ],
         ),

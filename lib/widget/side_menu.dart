@@ -1,6 +1,7 @@
-import 'package:app_admin_pizzeria/screens/main_screen.dart';
+import 'package:app_admin_pizzeria/providers/page_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({
@@ -9,6 +10,7 @@ class SideMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<PageProvider>(context);
     return Drawer(
       child: ListView(
         children: [
@@ -19,27 +21,29 @@ class SideMenu extends StatelessWidget {
             title: "Dashboard",
             svgSrc: "assets/icons/menu_dashboard.svg",
             press: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const MainScreen(),
-                ),
-              );
+              provider.changePage(0);
             },
           ),
           DrawerListTile(
             title: "Mappa",
             svgSrc: "assets/icons/menu_task.svg",
-            press: () {},
+            press: () {
+              provider.changePage(1);
+            },
           ),
           DrawerListTile(
             title: "Menù",
             svgSrc: "assets/icons/menu_doc.svg",
-            press: () {},
+            press: () {
+              provider.changePage(2);
+            },
           ),
           DrawerListTile(
             title: "Ordini",
             svgSrc: "assets/icons/menu_store.svg",
-            press: () {},
+            press: () {
+              provider.changePage(3);
+            },
           ),
         ],
       ),
@@ -49,12 +53,12 @@ class SideMenu extends StatelessWidget {
 
 class DrawerListTile extends StatelessWidget {
   const DrawerListTile({
-    Key? key,
+    super.key,
     // For selecting those three line once press "Command+D"
     required this.title,
     required this.svgSrc,
     required this.press,
-  }) : super(key: key);
+  });
 
   final String title, svgSrc;
   final VoidCallback press;
@@ -66,12 +70,13 @@ class DrawerListTile extends StatelessWidget {
       horizontalTitleGap: 0.0,
       leading: SvgPicture.asset(
         svgSrc,
-        colorFilter: const ColorFilter.mode(Colors.white54, BlendMode.srcIn),
+        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
         height: 16,
       ),
       title: Text(
         title,
-        style: const TextStyle(color: Colors.white54),
+        style:
+            const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
       ),
     );
   }

@@ -1,6 +1,6 @@
 import 'package:app_admin_pizzeria/auth.dart';
 import 'package:app_admin_pizzeria/constants.dart';
-import 'package:app_admin_pizzeria/providers/menu_controller.dart';
+import 'package:app_admin_pizzeria/providers/page_provider.dart';
 import 'package:app_admin_pizzeria/screens/main_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,28 +20,33 @@ void main() async {
 
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (_) => MenuAppController()),
+      ChangeNotifierProvider(create: (_) => PageProvider()),
     ],
-    child: const MyApp(),
+    child: MyApp(),
   ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+
+  final PageController _pageController = PageController();
+  final ValueNotifier<int> selectedPage = ValueNotifier(0);
 
   @override
   Widget build(BuildContext context) {
+    selectedPage.value = Provider.of<PageProvider>(context).selectedPage;
+
+    selectedPage.addListener(() {
+      _pageController.jumpToPage(selectedPage.value);
+    });
+
     return MaterialApp(
-      theme: ThemeData.dark().copyWith(
+      theme: ThemeData.light().copyWith(
         scaffoldBackgroundColor: bgColor,
         textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
         canvasColor: secondaryColor,
       ),
       home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 4, 167, 113),
-          toolbarHeight: 0,
-        ),
         body: SafeArea(
           child: StreamBuilder<User?>(
               stream: FirebaseAuth.instance.authStateChanges(),
@@ -51,7 +56,12 @@ class MyApp extends StatelessWidget {
                 } else if (snapshot.hasError) {
                   return const Text("Exception");
                 } else if (snapshot.hasData) {
-                  return const MainScreen();
+                  return PageView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    allowImplicitScrolling: false,
+                    controller: _pageController,
+                    children: [MainScreen(index: selectedPage.value)],
+                  );
                 } else {
                   return const AuthScreen();
                 }

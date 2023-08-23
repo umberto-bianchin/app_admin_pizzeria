@@ -1,9 +1,8 @@
 import 'package:app_admin_pizzeria/helper.dart';
-import 'package:app_admin_pizzeria/providers/menu_controller.dart';
+import 'package:app_admin_pizzeria/providers/page_provider.dart';
 import 'package:app_admin_pizzeria/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../constants.dart';
 
 class Header extends StatelessWidget {
@@ -16,15 +15,22 @@ class Header extends StatelessWidget {
         if (!Responsive.isDesktop(context))
           IconButton(
             icon: const Icon(Icons.menu),
-            onPressed: context.read<MenuAppController>().controlMenu,
+            onPressed: () {
+              final ScaffoldState scaffoldState = Scaffold.of(context);
+              if (!scaffoldState.isDrawerOpen) {
+                scaffoldState.openDrawer();
+              } else {
+                scaffoldState.openEndDrawer();
+              }
+            },
           ),
         if (!Responsive.isMobile(context))
           Text(
-            "Dashboard",
+            Provider.of<PageProvider>(context).getPage,
             style: Theme.of(context)
                 .textTheme
                 .titleLarge!
-                .copyWith(color: Colors.white),
+                .copyWith(color: Colors.black),
           ),
         if (!Responsive.isMobile(context))
           Spacer(flex: Responsive.isDesktop(context) ? 2 : 1),
@@ -40,17 +46,18 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.only(left: defaultPadding),
-        padding: const EdgeInsets.symmetric(
-          horizontal: defaultPadding,
-          vertical: defaultPadding / 2,
-        ),
-        decoration: BoxDecoration(
-          color: secondaryColor,
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
-          border: Border.all(color: Colors.white10),
-        ),
-        child: Row(children: [
+      margin: const EdgeInsets.only(left: defaultPadding),
+      padding: const EdgeInsets.symmetric(
+        horizontal: defaultPadding,
+        vertical: defaultPadding / 2,
+      ),
+      decoration: BoxDecoration(
+        color: secondaryColor,
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+        border: Border.all(color: Colors.white10),
+      ),
+      child: Row(
+        children: [
           if (!Responsive.isMobile(context))
             Padding(
               padding:
@@ -65,11 +72,13 @@ class ProfileCard extends StatelessWidget {
               side: const BorderSide(color: Colors.transparent),
             ),
             onPressed: () {
-              logOut(context);
+              logOut();
             },
             child: const Text("Disconnettiti"),
           ),
-        ]));
+        ],
+      ),
+    );
   }
 }
 /*

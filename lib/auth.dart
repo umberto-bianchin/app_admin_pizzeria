@@ -38,10 +38,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 const SizedBox(height: 30),
                 Text(
                   'Bentornato ADMIN!',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall!
-                      .copyWith(color: Colors.white),
+                  style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.center,
                 ),
 
@@ -218,7 +215,16 @@ class _AuthScreenState extends State<AuthScreen> {
           password: passwordController.text.trim());
       if (mounted) Navigator.pop(context);
 
-      saveAdmin();
+      IdTokenResult idTokenResult =
+          await FirebaseAuth.instance.currentUser!.getIdTokenResult();
+      bool isAdmin = idTokenResult.claims!['admin'] ?? false;
+
+      if (!isAdmin) {
+        logOut();
+        MySnackBar.showMySnackBar(context, "Non é un account admin");
+      }
+
+      //saveAdmin();
     } on FirebaseAuthException catch (e) {
       String error = e.code;
 

@@ -2,8 +2,8 @@ import 'package:app_admin_pizzeria/responsive.dart';
 import 'package:flutter/material.dart';
 import '../constants.dart';
 
-class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({super.key});
+class OrderScreen extends StatelessWidget {
+  const OrderScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
