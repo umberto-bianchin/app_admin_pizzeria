@@ -32,7 +32,7 @@ class SideMenu extends StatelessWidget {
             },
           ),
           DrawerListTile(
-            title: "Menù",
+            title: "Menu",
             svgSrc: "assets/icons/menu_doc.svg",
             press: () {
               provider.changePage(2);

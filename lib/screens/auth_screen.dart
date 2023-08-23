@@ -1,10 +1,8 @@
 import 'package:app_admin_pizzeria/helper.dart';
-import 'package:app_admin_pizzeria/main.dart';
+
 import 'package:app_admin_pizzeria/widget/top_banner.dart';
-import 'package:app_admin_pizzeria/widget/my_snackbar.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -142,7 +140,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                             ),
                                           ),
                                           onPressed: () {
-                                            resetPassword();
+                                            resetPassword(context, backupEmailController, resetKey);
                                           },
                                         ),
                                       ),
@@ -180,7 +178,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                     ),
                     onPressed: () {
-                      signIn();
+                      signIn(context, emailController, passwordController, formKey);
                     },
                   ),
                 ),
@@ -194,136 +192,46 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  Future signIn() async {
-    if (!formKey.currentState!.validate()) {
-      MySnackBar.showMySnackBar(context, "Credenziali in forma errata");
-      return;
-    }
-
-    FocusScope.of(context).unfocus();
-
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) {
-          return const Center(child: CircularProgressIndicator());
-        });
-
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text.trim(),
-          password: passwordController.text.trim());
-      if (mounted) Navigator.pop(context);
-
-      IdTokenResult idTokenResult =
-          await FirebaseAuth.instance.currentUser!.getIdTokenResult();
-      bool isAdmin = idTokenResult.claims!['admin'] ?? false;
-
-      if (!isAdmin) {
-        logOut();
-        MySnackBar.showMySnackBar(context, "Non é un account admin");
-      }
-
-      //saveAdmin();
-    } on FirebaseAuthException catch (e) {
-      String error = e.code;
-
-      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
-        error = "Credenziali errate";
-      } else {
-        if (kDebugMode) {
-          print(error);
-        }
-      }
-
-      if (!mounted) return;
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      MySnackBar.showMySnackBar(context, error);
-
-      return;
-    }
-  }
-
-  Future resetPassword() async {
-    if (!resetKey.currentState!.validate()) {
-      MySnackBar.showMySnackBar(context, "Credenziali in forma errata");
-      return;
-    }
-
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) {
-          return const Center(child: CircularProgressIndicator());
-        });
-
-    try {
-      await FirebaseAuth.instance
-          .sendPasswordResetEmail(email: backupEmailController.text.trim());
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        MySnackBar.showMySnackBar(context, 'Email inviata');
-      }
-    } on FirebaseAuthException catch (e) {
-      String error = e.code;
-
-      if (e.code == 'user-not-found') {
-        error = "Nessun utente registrato con questa mail";
-      } else {
-        if (kDebugMode) {
-          print(e.code);
-        }
-      }
-
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      MySnackBar.showMySnackBar(context, error);
-      navigatorKey.currentState!.popUntil((route) => route.isFirst);
-    }
-  }
-}
-
-Widget squareTile(final String imagePath) {
-  return Container(
-    padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(
-      border: Border.all(color: Colors.white),
-      borderRadius: BorderRadius.circular(16),
-      color: Colors.grey[200],
-    ),
-    child: Image.asset(
-      imagePath,
-      height: 40,
-    ),
-  );
-}
-
-Widget textField(controller, final String hintText, final bool obscureText) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-    child: TextFormField(
-      keyboardType:
-          obscureText ? TextInputType.text : TextInputType.emailAddress,
-      cursorColor: Colors.black,
-      autocorrect: false,
-      controller: controller,
-      obscureText: obscureText,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: (value) => obscureText || EmailValidator.validate(value!)
-          ? null
-          : "Inserisci una mail valida",
-      decoration: InputDecoration(
-        enabledBorder: const OutlineInputBorder(),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey.shade400),
-        ),
-        fillColor: const Color.fromARGB(255, 231, 231, 231),
-        filled: true,
-        hintText: hintText,
-        hintStyle: TextStyle(color: Colors.grey[500]),
+  Widget squareTile(final String imagePath) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.white),
+        borderRadius: BorderRadius.circular(16),
+        color: Colors.grey[200],
       ),
-    ),
-  );
+      child: Image.asset(
+        imagePath,
+        height: 40,
+      ),
+    );
+  }
+
+  Widget textField(controller, final String hintText, final bool obscureText) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+      child: TextFormField(
+        keyboardType:
+            obscureText ? TextInputType.text : TextInputType.emailAddress,
+        cursorColor: Colors.black,
+        autocorrect: false,
+        controller: controller,
+        obscureText: obscureText,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        validator: (value) => obscureText || EmailValidator.validate(value!)
+            ? null
+            : "Inserisci una mail valida",
+        decoration: InputDecoration(
+          enabledBorder: const OutlineInputBorder(),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade400),
+          ),
+          fillColor: const Color.fromARGB(255, 231, 231, 231),
+          filled: true,
+          hintText: hintText,
+          hintStyle: TextStyle(color: Colors.grey[500]),
+        ),
+      ),
+    );
+  }
 }

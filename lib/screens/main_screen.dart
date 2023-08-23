@@ -1,20 +1,20 @@
+import 'package:app_admin_pizzeria/providers/page_provider.dart';
 import 'package:app_admin_pizzeria/responsive.dart';
 import 'package:app_admin_pizzeria/screens/dashboard_screen.dart';
 import 'package:app_admin_pizzeria/screens/maps_screen.dart';
 import 'package:app_admin_pizzeria/screens/menu_screen.dart';
 import 'package:app_admin_pizzeria/screens/order_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../constants.dart';
 import '../widget/header.dart';
 import '../widget/side_menu.dart';
 
 class MainScreen extends StatelessWidget {
-  const MainScreen({super.key, required this.index});
+  const MainScreen({super.key});
 
-  final int index;
-
-  final List<Widget> displayed = const [
+  final List<Widget> _displayed = const [
     DashboardScreen(),
     MapScreen(),
     MenuScreen(),
@@ -23,6 +23,8 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final int index = Provider.of<PageProvider>(context).selectedPage;
+
     return Scaffold(
       drawer: const SideMenu(),
       body: SafeArea(
@@ -45,7 +47,7 @@ class MainScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     const Header(),
-                    displayed[index],
+                    _displayed[index],
                   ],
                 ),
               ),
