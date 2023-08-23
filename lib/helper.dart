@@ -229,3 +229,14 @@ List<Ingredients> getIngredients(String ingredients) {
           .firstWhere((e) => e.toString() == 'Ingredients.$ingred'))
       .toList();
 }
+
+void confirmOrder(String uid) {
+  firestoreInstance
+      .collection("users")
+      .doc(uid)
+      .collection("orders")
+      .doc("order")
+      .set({
+    "accepted": "True",
+  }, SetOptions(merge: true));
+}

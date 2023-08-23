@@ -1,3 +1,4 @@
+import 'package:app_admin_pizzeria/constants.dart';
 import 'package:app_admin_pizzeria/data/order_data.dart';
 import 'package:app_admin_pizzeria/helper.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,7 @@ class OrderScreen extends StatefulWidget {
   const OrderScreen({super.key});
 
   @override
-  _OrderScreenState createState() => _OrderScreenState();
+  State<OrderScreen> createState() => _OrderScreenState();
 }
 
 class _OrderScreenState extends State<OrderScreen> {
@@ -36,18 +37,22 @@ class _OrderScreenState extends State<OrderScreen> {
             child: Text('Nessun ordine disponibile'),
           );
         } else {
-          return SizedBox(
-            height: 300,
-            child: ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final order = snapshot.data![index];
-                return ListTile(
-                  title: Text('Ordine ${order.data[0].dataName}'),
-                  subtitle: Text('Totale: ${order.price}'),
-                  // Altre informazioni sull'ordine possono essere visualizzate qui
-                );
-              },
+          return Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(defaultPadding),
+              child: ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  final order = snapshot.data![index];
+                  return ListTile(
+                    title: Text('Ordine ${order.data[index].dataName}'),
+                    subtitle: Text('Totale: ${order.price}'),
+                    onTap: () {
+                      confirmOrder("SBI3iMJAnlMvAMqzVOWTgMv1mkQ2");
+                    },
+                  );
+                },
+              ),
             ),
           );
         }

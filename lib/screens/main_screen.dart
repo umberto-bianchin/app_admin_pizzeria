@@ -41,15 +41,14 @@ class MainScreen extends StatelessWidget {
             Expanded(
               // It takes 5/6 part of the screen
               flex: 5,
-              child: SingleChildScrollView(
-                primary: false,
-                padding: const EdgeInsets.all(defaultPadding),
-                child: Column(
-                  children: [
-                    const Header(),
-                    _displayed[index],
-                  ],
-                ),
+              child: Column(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(defaultPadding),
+                    child: Header(),
+                  ),
+                  _displayed[index],
+                ],
               ),
             ),
           ],
