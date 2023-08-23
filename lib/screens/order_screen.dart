@@ -1,4 +1,3 @@
-import 'package:app_admin_pizzeria/responsive.dart';
 import 'package:flutter/material.dart';
 import '../constants.dart';
 
@@ -7,17 +6,15 @@ class OrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           flex: 5,
           child: Column(
             children: [
-              const SizedBox(height: defaultPadding),
-              if (Responsive.isMobile(context))
-                const SizedBox(height: defaultPadding),
-              if (Responsive.isMobile(context)) const Placeholder(),
+               SizedBox(height: defaultPadding),
+              
             ],
           ),
         ),

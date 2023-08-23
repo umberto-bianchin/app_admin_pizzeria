@@ -1,9 +1,13 @@
+import 'package:app_admin_pizzeria/data/order_data.dart';
 import 'package:app_admin_pizzeria/widget/my_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'data/data_item.dart';
+import 'data/menu_items_list.dart';
 import 'main.dart';
 import 'providers/page_provider.dart';
 
@@ -36,6 +40,7 @@ Future signIn(
     await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim());
+
     if (context.mounted) Navigator.pop(context);
 
     IdTokenResult idTokenResult =
@@ -75,6 +80,8 @@ Future signIn(
 }
 
 void logOut(BuildContext context) {
+  retrieveOrders(context);
+
   FirebaseAuth.instance.signOut();
   Provider.of<PageProvider>(context, listen: false)
       .changeStatus(LoginStatus.notLogged);
@@ -163,4 +170,63 @@ Future<Map<String, String>> getUserInfo() async {
 
 String getUserMail() {
   return FirebaseAuth.instance.currentUser!.email!;
+}
+
+OrderData retrieveOrderUser(
+  BuildContext context,
+  Map<String, dynamic> data,
+) {
+  List<DataItem> itemsList = [];
+
+  // Iterate through fields with "ordine" prefix
+  int orderIndex = 0;
+  while (data.containsKey('ordine$orderIndex')) {
+    final Map<String, dynamic> field = data['ordine$orderIndex'];
+    itemsList.add(DataItem(
+        key: UniqueKey(),
+        image: information[field["name"]]![2],
+        name: field["name"],
+        ingredients: getIngredients(field["ingredients"]),
+        initialPrice: information[field["name"]]![0],
+        category: information[field["name"]]![1],
+        quantity: field["quantity"]));
+
+    orderIndex++;
+  }
+
+  return OrderData(
+      data: itemsList,
+      accepted: data["accepted"],
+      deliveryMethod: data["delivery-method"],
+      time: data["time-interval"],
+      price: data["total"]);
+}
+
+Future<List<OrderData>> retrieveOrders(BuildContext context) async {
+  final snapshot = await FirebaseFirestore.instance.collection('users').get();
+  final allUserDocuments = snapshot.docs;
+
+  List<OrderData> ordersList = [];
+  for (final userDoc in allUserDocuments) {
+    final userOrder =
+        await userDoc.reference.collection('orders').doc("order").get();
+
+    print(userOrder.data());
+    ordersList.add(
+      retrieveOrderUser(
+        context,
+        userOrder.data()!,
+      ),
+    );
+  }
+
+  return ordersList;
+}
+
+List<Ingredients> getIngredients(String ingredients) {
+  List<String> ingr = ingredients.split(', ');
+  return ingr
+      .map((ingred) => Ingredients.values
+          .firstWhere((e) => e.toString() == 'Ingredients.$ingred'))
+      .toList();
 }
