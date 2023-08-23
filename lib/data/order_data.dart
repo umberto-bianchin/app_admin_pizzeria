@@ -10,7 +10,7 @@ class OrderData {
   });
 
   final List<DataItem> data;
-  final bool accepted;
+  final String accepted;
   final String deliveryMethod;
   final String time;
   final String price;

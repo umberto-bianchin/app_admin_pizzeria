@@ -8,7 +8,6 @@ enum Categories {
   kebab,
 }
 
-
 class DataItem {
   DataItem({
     required this.key,
@@ -34,6 +33,8 @@ class DataItem {
   final UniqueKey key;
   int quantity;
   bool menuDefault;
+
+  String get dataName => name;
 
   void addIngredients(Ingredients ingredient) {
     ingredients.add(ingredient);

@@ -80,8 +80,6 @@ Future signIn(
 }
 
 void logOut(BuildContext context) {
-  retrieveOrders(context);
-
   FirebaseAuth.instance.signOut();
   Provider.of<PageProvider>(context, listen: false)
       .changeStatus(LoginStatus.notLogged);
@@ -211,13 +209,14 @@ Future<List<OrderData>> retrieveOrders(BuildContext context) async {
     final userOrder =
         await userDoc.reference.collection('orders').doc("order").get();
 
-    print(userOrder.data());
-    ordersList.add(
-      retrieveOrderUser(
-        context,
-        userOrder.data()!,
-      ),
-    );
+    if (context.mounted) {
+      ordersList.add(
+        retrieveOrderUser(
+          context,
+          userOrder.data()!,
+        ),
+      );
+    }
   }
 
   return ordersList;
