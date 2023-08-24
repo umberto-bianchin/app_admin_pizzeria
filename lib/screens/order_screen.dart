@@ -3,6 +3,8 @@ import 'package:app_admin_pizzeria/data/data_item.dart';
 import 'package:app_admin_pizzeria/data/order_data.dart';
 import 'package:app_admin_pizzeria/helper.dart';
 import 'package:app_admin_pizzeria/providers/orders_provider.dart';
+import 'package:app_admin_pizzeria/widget/cost_picker.dart';
+import 'package:app_admin_pizzeria/widget/time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,13 +33,51 @@ class OrderScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  trailing: Text(order.phone),
+                  subtitle: Text(order.phone),
                 ),
                 if (order.deliveryMethod == "Domicilio")
                   ListTile(
-                    title: const Text("Indirizzo"),
-                    trailing: Text(order.address),
+                    title: const Text(
+                      "Indirizzo",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(order.address),
                   ),
+                if (order.deliveryMethod == "Domicilio")
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: ListTile(
+                      title: const Text(
+                        "Costo consegna",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: CostPicker(
+                        order: order,
+                      ),
+                    ),
+                  ),
+                ListTile(
+                    title: const Text(
+                      "Orario",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: TimePicker(
+                      order: order,
+                    )),
+                const ListTile(
+                  title: Text(
+                    "Ordine:",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
                 for (DataItem item in order.data)
                   ListTile(
                     title: Text(item.dataName),
@@ -54,7 +94,7 @@ class OrderScreen extends StatelessWidget {
                   ),
                 const SizedBox(height: 10),
                 Text(
-                  "Totale: ${order.getTotal().toStringAsFixed(2)}",
+                  "Totale: € ${order.getTotal().toStringAsFixed(2)}",
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

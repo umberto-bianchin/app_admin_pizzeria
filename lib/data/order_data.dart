@@ -9,7 +9,6 @@ class OrderData {
       required this.accepted,
       required this.deliveryMethod,
       required this.time,
-      required this.totalPrice,
       required this.uid});
 
   final String name;
@@ -18,15 +17,15 @@ class OrderData {
   final List<DataItem> data;
   String accepted;
   final String deliveryMethod;
-  final String time;
-  final String totalPrice;
+  String time;
   final String uid;
+  double deliveryPrice = 0;
 
   double getTotal() {
     double total = 0;
     for (DataItem item in data) {
       total += item.calculatePrice();
     }
-    return total;
+    return total+deliveryPrice;
   }
 }

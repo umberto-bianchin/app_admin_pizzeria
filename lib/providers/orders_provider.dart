@@ -22,6 +22,11 @@ class OrdersProvider with ChangeNotifier {
     }));
   }
 
+  void updatePrice(OrderData order, double deliveryPrice) {
+    order.deliveryPrice = deliveryPrice;
+    notifyListeners();
+  }
+
   void update() async {
     final documents =
         await FirebaseFirestore.instance.collection('users').get();
@@ -47,7 +52,6 @@ class OrdersProvider with ChangeNotifier {
 
   void confirmOrder(OrderData order) {
     order.accepted = "True";
-     notifyListeners();
-
+    notifyListeners();
   }
 }

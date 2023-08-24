@@ -204,7 +204,6 @@ OrderData retrieveOrderUser(
     accepted: data["accepted"],
     deliveryMethod: data["delivery-method"],
     time: data["time-interval"],
-    totalPrice: data["total"],
     name: name,
     phone: phone,
     address: address,
@@ -251,6 +250,7 @@ void confirmOrder(BuildContext context, OrderData order) {
       .doc("order")
       .set({
     "accepted": "True",
+    "time-interval": order.time
   }, SetOptions(merge: true));
 
   Provider.of<OrdersProvider>(context, listen: false).confirmOrder(order);
