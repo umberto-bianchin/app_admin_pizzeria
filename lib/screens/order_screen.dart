@@ -1,62 +1,83 @@
 import 'package:app_admin_pizzeria/constants.dart';
+import 'package:app_admin_pizzeria/data/data_item.dart';
 import 'package:app_admin_pizzeria/data/order_data.dart';
 import 'package:app_admin_pizzeria/helper.dart';
+import 'package:app_admin_pizzeria/providers/orders_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class OrderScreen extends StatefulWidget {
+class OrderScreen extends StatelessWidget {
   const OrderScreen({super.key});
 
   @override
-  State<OrderScreen> createState() => _OrderScreenState();
-}
-
-class _OrderScreenState extends State<OrderScreen> {
-  late Future<List<OrderData>> _ordersFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _ordersFuture = retrieveOrders(context);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<OrderData>>(
-      future: _ordersFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (snapshot.hasError) {
-          return const Center(
-            child: Text('Errore durante il recupero degli ordini'),
-          );
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(
-            child: Text('Nessun ordine disponibile'),
-          );
-        } else {
-          return Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(defaultPadding),
-              child: ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  final order = snapshot.data![index];
-                  return ListTile(
-                    title: Text('Ordine ${order.data[index].dataName}'),
-                    subtitle: Text('Totale: ${order.price}'),
-                    onTap: () {
-                      confirmOrder("SBI3iMJAnlMvAMqzVOWTgMv1mkQ2");
-                    },
-                  );
-                },
-              ),
-            ),
-          );
-        }
-      },
+    List<OrderData> orders = Provider.of<OrdersProvider>(context).orders;
+
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(defaultPadding),
+        child: ListView.builder(
+          itemCount: orders.length,
+          itemBuilder: (context, index) {
+            final order = orders[index];
+            return ExpansionTile(
+              title: Text(order.name),
+              subtitle: Text(order.deliveryMethod),
+              children: [
+                ListTile(
+                  title: const Text(
+                    "Numero di telefono",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  trailing: Text(order.phone),
+                ),
+                if (order.deliveryMethod == "Domicilio")
+                  ListTile(
+                    title: const Text("Indirizzo"),
+                    trailing: Text(order.address),
+                  ),
+                for (DataItem item in order.data)
+                  ListTile(
+                    title: Text(item.dataName),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(item.getIngredients()),
+                        Text(
+                          "€ ${item.calculatePrice().toStringAsFixed(2)}",
+                        ),
+                      ],
+                    ),
+                    trailing: Text("Quantitá: ${item.quantity}"),
+                  ),
+                const SizedBox(height: 10),
+                Text(
+                  "Totale: ${order.getTotal().toStringAsFixed(2)}",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(defaultPadding),
+                  child: ElevatedButton(
+                    onPressed: order.accepted == "False"
+                        ? () {
+                            confirmOrder(context, order);
+                          }
+                        : null,
+                    child: Text(order.accepted == "False"
+                        ? "Conferma ordine"
+                        : "Ordine confermato"),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 }

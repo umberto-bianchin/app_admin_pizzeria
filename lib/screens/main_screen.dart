@@ -1,3 +1,4 @@
+import 'package:app_admin_pizzeria/providers/orders_provider.dart';
 import 'package:app_admin_pizzeria/providers/page_provider.dart';
 import 'package:app_admin_pizzeria/responsive.dart';
 import 'package:app_admin_pizzeria/screens/dashboard_screen.dart';
@@ -24,6 +25,7 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final int index = Provider.of<PageProvider>(context).selectedPage;
+    Provider.of<OrdersProvider>(context, listen: false).updateOrders();
 
     return Scaffold(
       drawer: const SideMenu(),

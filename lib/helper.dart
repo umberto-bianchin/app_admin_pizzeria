@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:app_admin_pizzeria/data/order_data.dart';
+import 'package:app_admin_pizzeria/providers/orders_provider.dart';
 import 'package:app_admin_pizzeria/widget/my_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -33,8 +36,6 @@ Future signIn(
       builder: (context) {
         return const Center(child: CircularProgressIndicator());
       });
-
-  //FirebaseAuth.instance.setPersistence(Persistence.LOCAL)
 
   try {
     await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -80,9 +81,12 @@ Future signIn(
 }
 
 void logOut(BuildContext context) {
+  //listener!.cancel();
   FirebaseAuth.instance.signOut();
   Provider.of<PageProvider>(context, listen: false)
       .changeStatus(LoginStatus.notLogged);
+
+  Provider.of<OrdersProvider>(context).clearListener();
 }
 
 Future resetPassword(
@@ -171,8 +175,11 @@ String getUserMail() {
 }
 
 OrderData retrieveOrderUser(
-  BuildContext context,
   Map<String, dynamic> data,
+  String name,
+  String phone,
+  String address,
+  String uid,
 ) {
   List<DataItem> itemsList = [];
 
@@ -193,28 +200,34 @@ OrderData retrieveOrderUser(
   }
 
   return OrderData(
-      data: itemsList,
-      accepted: data["accepted"],
-      deliveryMethod: data["delivery-method"],
-      time: data["time-interval"],
-      price: data["total"]);
+    data: itemsList,
+    accepted: data["accepted"],
+    deliveryMethod: data["delivery-method"],
+    time: data["time-interval"],
+    totalPrice: data["total"],
+    name: name,
+    phone: phone,
+    address: address,
+    uid: uid,
+  );
 }
 
-Future<List<OrderData>> retrieveOrders(BuildContext context) async {
+Future<List<OrderData>> retrieveOrders() async {
   final snapshot = await FirebaseFirestore.instance.collection('users').get();
   final allUserDocuments = snapshot.docs;
 
   List<OrderData> ordersList = [];
   for (final userDoc in allUserDocuments) {
+    String name = userDoc["name"];
+    String phone = userDoc["phone"];
+    String address = userDoc["address"];
+
     final userOrder =
         await userDoc.reference.collection('orders').doc("order").get();
 
-    if (context.mounted) {
+    if (userOrder.exists) {
       ordersList.add(
-        retrieveOrderUser(
-          context,
-          userOrder.data()!,
-        ),
+        retrieveOrderUser(userOrder.data()!, name, phone, address, userDoc.id),
       );
     }
   }
@@ -230,13 +243,15 @@ List<Ingredients> getIngredients(String ingredients) {
       .toList();
 }
 
-void confirmOrder(String uid) {
+void confirmOrder(BuildContext context, OrderData order) {
   firestoreInstance
       .collection("users")
-      .doc(uid)
+      .doc(order.uid)
       .collection("orders")
       .doc("order")
       .set({
     "accepted": "True",
   }, SetOptions(merge: true));
+
+  Provider.of<OrdersProvider>(context, listen: false).confirmOrder(order);
 }

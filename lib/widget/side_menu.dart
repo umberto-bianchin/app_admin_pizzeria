@@ -10,7 +10,7 @@ class SideMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<PageProvider>(context);
+    final provider = Provider.of<PageProvider>(context, listen: false);
     return Drawer(
       child: ListView(
         children: [

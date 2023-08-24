@@ -1,3 +1,4 @@
+import 'package:app_admin_pizzeria/providers/orders_provider.dart';
 import 'package:app_admin_pizzeria/screens/auth_screen.dart';
 import 'package:app_admin_pizzeria/constants.dart';
 import 'package:app_admin_pizzeria/providers/page_provider.dart';
@@ -19,9 +20,11 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => PageProvider()),
+      ChangeNotifierProvider(create: (_) => OrdersProvider()),
     ],
     child: const MyApp(),
   ));

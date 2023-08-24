@@ -2,7 +2,6 @@ import 'package:app_admin_pizzeria/helper.dart';
 
 import 'package:app_admin_pizzeria/widget/top_banner.dart';
 import 'package:email_validator/email_validator.dart';
-
 import 'package:flutter/material.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -140,7 +139,10 @@ class _AuthScreenState extends State<AuthScreen> {
                                             ),
                                           ),
                                           onPressed: () {
-                                            resetPassword(context, backupEmailController, resetKey);
+                                            resetPassword(
+                                                context,
+                                                backupEmailController,
+                                                resetKey);
                                           },
                                         ),
                                       ),
@@ -178,7 +180,8 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                     ),
                     onPressed: () {
-                      signIn(context, emailController, passwordController, formKey);
+                      signIn(context, emailController, passwordController,
+                          formKey);
                     },
                   ),
                 ),
