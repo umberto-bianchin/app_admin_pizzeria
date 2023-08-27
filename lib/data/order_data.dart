@@ -9,7 +9,9 @@ class OrderData {
       required this.accepted,
       required this.deliveryMethod,
       required this.time,
-      required this.uid});
+      required this.uid,
+      required this.deliveryPrice,
+      required this.personalPrice});
 
   final String name;
   final String phone;
@@ -20,12 +22,13 @@ class OrderData {
   String time;
   final String uid;
   double deliveryPrice = 0;
+  double personalPrice = 0;
 
   double getTotal() {
     double total = 0;
     for (DataItem item in data) {
       total += item.calculatePrice();
     }
-    return total+deliveryPrice;
+    return personalPrice != 0 ? personalPrice : total + deliveryPrice;
   }
 }

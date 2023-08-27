@@ -4,6 +4,7 @@ import 'package:app_admin_pizzeria/data/order_data.dart';
 import 'package:app_admin_pizzeria/providers/orders_provider.dart';
 import 'package:app_admin_pizzeria/widget/my_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -81,12 +82,11 @@ Future signIn(
 }
 
 void logOut(BuildContext context) {
-  //listener!.cancel();
   FirebaseAuth.instance.signOut();
   Provider.of<PageProvider>(context, listen: false)
       .changeStatus(LoginStatus.notLogged);
 
-  Provider.of<OrdersProvider>(context).clearListener();
+  Provider.of<OrdersProvider>(context, listen: false).clearListener();
 }
 
 Future resetPassword(
@@ -129,47 +129,6 @@ Future resetPassword(
   }
 }
 
-void saveUserInfos({required String address, required String phone}) {
-  var firebaseUser = FirebaseAuth.instance.currentUser;
-  firestoreInstance
-      .collection("users")
-      .doc(firebaseUser!.uid)
-      .collection("infos")
-      .doc("information")
-      .set({
-    "address": address,
-    "phone": phone,
-  }, SetOptions(merge: true));
-}
-
-void saveAdmin() {
-  var firebaseUser = FirebaseAuth.instance.currentUser;
-  firestoreInstance.collection("access").doc(firebaseUser!.uid).set({
-    'admin': true,
-  }, SetOptions(merge: true));
-}
-
-Future<Map<String, String>> getUserInfo() async {
-  var firebaseUser = FirebaseAuth.instance.currentUser;
-  var snapshot = await firestoreInstance
-      .collection("users")
-      .doc(firebaseUser!.uid)
-      .collection("infos")
-      .doc("information")
-      .get();
-
-  if (snapshot.exists) {
-    return {
-      "address": snapshot.data()!["address"],
-      "phone": snapshot.data()!["phone"],
-    };
-  }
-  return {
-    "address": "",
-    "phone": "",
-  };
-}
-
 String getUserMail() {
   return FirebaseAuth.instance.currentUser!.email!;
 }
@@ -203,6 +162,8 @@ OrderData retrieveOrderUser(
     data: itemsList,
     accepted: data["accepted"],
     deliveryMethod: data["delivery-method"],
+    deliveryPrice: (data["delivery-price"] ?? 0.0).toDouble(),
+    personalPrice: (data["price"] ?? 0.0).toDouble(),
     time: data["time-interval"],
     name: name,
     phone: phone,
@@ -242,16 +203,51 @@ List<Ingredients> getIngredients(String ingredients) {
       .toList();
 }
 
-void confirmOrder(BuildContext context, OrderData order) {
+void submitOrder(
+  BuildContext ctx, {
+  required OrderData order,
+}) async {
+  final Map<String, dynamic> jsonOrder = {};
+  int index = 0;
+
+  jsonOrder["accepted"] = "True";
+  jsonOrder["time-interval"] = order.time;
+  jsonOrder["delivery-price"] = order.deliveryPrice;
+  jsonOrder["total"] = order.getTotal().toStringAsFixed(2);
+  jsonOrder["price"] = order.personalPrice;
+  jsonOrder["delivery-method"] = order.deliveryMethod;
+
+  for (DataItem item in order.data) {
+    jsonOrder["ordine$index"] = {
+      "name": item.name,
+      "quantity": item.quantity,
+      "ingredients": item.ingredients.map((ingr) => ingr.name).join(', '),
+    };
+    index++;
+  }
+
   firestoreInstance
       .collection("users")
       .doc(order.uid)
       .collection("orders")
       .doc("order")
-      .set({
-    "accepted": "True",
-    "time-interval": order.time
-  }, SetOptions(merge: true));
+      .set(jsonOrder, SetOptions(merge: true));
 
-  Provider.of<OrdersProvider>(context, listen: false).confirmOrder(order);
+  Provider.of<OrdersProvider>(ctx, listen: false).confirmOrder(order);
+
+  final snapshot =
+      await firestoreInstance.collection("users").doc(order.uid).get();
+
+  String token = snapshot.data()!["token"];
+
+  sendNotification("Ordine confermato", token);
+}
+
+void sendNotification(String title, String token) async {
+  try {
+    await FirebaseFunctions.instance.httpsCallable('sendNotification').call({
+      "title": title,
+      "token": token,
+    });
+  } catch (error) {}
 }

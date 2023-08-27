@@ -3,23 +3,23 @@ import 'package:app_admin_pizzeria/providers/orders_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CostPicker extends StatefulWidget {
-  CostPicker({super.key, required this.order})
-      : controller =
-            TextEditingController(text: order.deliveryPrice.toString());
+class CostPicker extends StatelessWidget {
+  CostPicker({super.key, required this.order, required this.isDelivery})
+      : controller = TextEditingController(
+            text: isDelivery
+                ? order.deliveryPrice.toString()
+                : order.getTotal().toString());
   final TextEditingController controller;
   final OrderData order;
+  final bool isDelivery;
 
-  @override
-  State<CostPicker> createState() => _CostPickerState();
-}
-
-class _CostPickerState extends State<CostPicker> {
   final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment:
+          isDelivery ? MainAxisAlignment.start : MainAxisAlignment.center,
       children: [
         SizedBox(
           width: 100,
@@ -32,7 +32,7 @@ class _CostPickerState extends State<CostPicker> {
                 keyboardType: TextInputType.number,
                 cursorColor: Colors.black,
                 autocorrect: false,
-                controller: widget.controller,
+                controller: controller,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) {
                   if (value == "") return null;
@@ -64,8 +64,10 @@ class _CostPickerState extends State<CostPicker> {
           onPressed: () {
             if (formKey.currentState!.validate()) {
               Provider.of<OrdersProvider>(context, listen: false).updatePrice(
-                  widget.order, double.parse(widget.controller.text));
+                  order, double.parse(controller.text), isDelivery);
             }
+
+            if (!isDelivery) Navigator.of(context).pop();
           },
           child: const Text("Conferma prezzo"),
         )

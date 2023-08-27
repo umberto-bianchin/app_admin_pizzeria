@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_admin_pizzeria/data/data_item.dart';
 import 'package:app_admin_pizzeria/data/order_data.dart';
 import 'package:app_admin_pizzeria/helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,8 +23,11 @@ class OrdersProvider with ChangeNotifier {
     }));
   }
 
-  void updatePrice(OrderData order, double deliveryPrice) {
-    order.deliveryPrice = deliveryPrice;
+  void updatePrice(OrderData order, double price, bool isDelivery) {
+    isDelivery
+        ? order.deliveryPrice = price
+        : order.personalPrice = price;
+
     notifyListeners();
   }
 
@@ -52,6 +56,21 @@ class OrdersProvider with ChangeNotifier {
 
   void confirmOrder(OrderData order) {
     order.accepted = "True";
+    notifyListeners();
+  }
+
+  void changeIngredient(DataItem item, int index) {
+    item.ingredients.removeAt(index);
+    notifyListeners();
+  }
+
+  void changeQuantity(DataItem item, int quantity) {
+    item.quantity = quantity;
+    notifyListeners();
+  }
+
+  void removeItem(OrderData order, DataItem item) {
+    order.data.remove(item);
     notifyListeners();
   }
 }

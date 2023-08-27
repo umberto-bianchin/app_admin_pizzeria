@@ -20,7 +20,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => PageProvider()),
