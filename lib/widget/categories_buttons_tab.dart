@@ -1,4 +1,5 @@
 import 'package:app_admin_pizzeria/providers/page_provider.dart';
+import 'package:app_admin_pizzeria/widget/menu_item_add.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,6 +8,7 @@ enum Categories {
   bibite,
   panini,
   kebab,
+  ingredienti,
 }
 
 final List<Pair> listCategories = [
@@ -14,6 +16,7 @@ final List<Pair> listCategories = [
   Pair("assets/images/mexican.png", Categories.kebab),
   Pair("assets/images/burger.png", Categories.panini),
   Pair("assets/images/drink.png", Categories.bibite),
+  Pair("assets/images/pastry.png", Categories.ingredienti)
 ];
 
 class CategoriesButton extends StatelessWidget {
@@ -53,7 +56,8 @@ class CategoriesButton extends StatelessWidget {
         child: Container(
           alignment: Alignment.center,
           height: 40.0,
-          width: 100.0,
+          width: 120.0,
+          padding: const EdgeInsets.all(10.0),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0), color: colore),
           child: Row(
@@ -85,10 +89,6 @@ class CategoriesButton extends StatelessWidget {
       ),
     );
   }
-}
-
-String capitalize(String value) {
-  return "${value[0].toUpperCase()}${value.substring(1).toLowerCase()}";
 }
 
 class Pair {

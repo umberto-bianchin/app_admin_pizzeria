@@ -34,20 +34,17 @@ class _SearchIngredientState extends State<SearchIngredient> {
                 if (currentIcon.icon == Icons.search) {
                   currentIcon = const Icon(Icons.cancel);
                   displayed = SizedBox(
-                    width: MediaQuery.of(context).size.width / 1.8,
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width / 2,
-                      child: TextField(
-                        onChanged: widget.onChange,
-                        autofocus: true,
-                        decoration: const InputDecoration(
-                          hintText: 'Cerca',
-                          hintStyle: TextStyle(
-                            fontSize: 15,
-                            fontStyle: FontStyle.italic,
-                          ),
-                          border: InputBorder.none,
+                    width: MediaQuery.of(context).size.width / 2.5,
+                    child: TextField(
+                      onChanged: widget.onChange,
+                      autofocus: true,
+                      decoration: const InputDecoration(
+                        hintText: 'Cerca',
+                        hintStyle: TextStyle(
+                          fontSize: 15,
+                          fontStyle: FontStyle.italic,
                         ),
+                        border: InputBorder.none,
                       ),
                     ),
                   );

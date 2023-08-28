@@ -1,6 +1,7 @@
+import 'package:app_admin_pizzeria/providers/menu_provider.dart';
 import 'package:app_admin_pizzeria/widget/categories_buttons_tab.dart';
 import 'package:flutter/material.dart';
-import 'menu_items_list.dart';
+import 'package:provider/provider.dart';
 
 class DataItem {
   DataItem({
@@ -15,7 +16,7 @@ class DataItem {
 
   final String image;
   String name;
-  List<Ingredients> ingredients;
+  List<String> ingredients;
   double initialPrice;
   final Categories category;
   final UniqueKey key;
@@ -23,16 +24,23 @@ class DataItem {
 
   String get dataName => name;
 
-  void addIngredients(Ingredients ingredient) {
+  void addIngredients(String ingredient) {
+    
     ingredients.add(ingredient);
   }
 
-  double calculatePrice() {
+  double calculatePrice(BuildContext context) {
     try {
       double price = initialPrice;
-      for (Ingredients ingredient in ingredients) {
-        if (!information[name]![3].contains(ingredient)) {
-          price = price + costIngredients[ingredient]!;
+      DataItem baseItem = Provider.of<MenuProvider>(context, listen: false)
+          .menu
+          .firstWhere((element) => element.name == name);
+      
+      
+
+      for (String ingredient in ingredients) {
+        if (!baseItem.ingredients.contains(ingredient)) {
+          price = price + Provider.of<MenuProvider>(context, listen: false).ingredients[ingredient]!;
         }
       }
       return price * quantity;
@@ -46,27 +54,14 @@ class DataItem {
       key: UniqueKey(),
       image: image,
       name: name,
-      ingredients: List.from(ingredients),
+      ingredients: ingredients,
       initialPrice: initialPrice,
       category: category,
       quantity: quantity,
     );
   }
 
-  void clearList() {
-    final indexes = [];
-    for (Ingredients ingredient in ingredients) {
-      indexes.add(ingredients.indexOf(ingredient));
-    }
-
-    for (int index in indexes) {
-      ingredients.removeAt(index);
-    }
-  }
-
   String getIngredients() {
-    return ingredients
-        .map((element) => element.name.replaceAll("_", " "))
-        .join(', ');
+    return ingredients.join(', ');
   }
 }

@@ -1,7 +1,8 @@
-import 'package:app_admin_pizzeria/data/menu_items_list.dart';
 import 'package:app_admin_pizzeria/data/order_data.dart';
+import 'package:app_admin_pizzeria/providers/menu_provider.dart';
 import 'package:app_admin_pizzeria/providers/orders_provider.dart';
 import 'package:app_admin_pizzeria/widget/categories_buttons_tab.dart';
+import 'package:app_admin_pizzeria/widget/menu_item_add.dart';
 import 'package:app_admin_pizzeria/widget/quantity_selector.dart';
 import 'package:app_admin_pizzeria/widget/search_ingredient.dart';
 import 'package:flutter/material.dart';
@@ -39,15 +40,15 @@ class _ItemCartState extends State<ItemCart> {
     });
   }
 
-  void addIngredients(Ingredients ingredient) {
+  void addIngredients(String ingredient, double price) {
     setState(() {
       customItem!.addIngredients(ingredient);
     });
   }
 
-  void removeIngredient(int index) {
+  void removeIngredient(String ingredient) {
     setState(() {
-      context.read<OrdersProvider>().changeIngredient(customItem!, index);
+      context.read<OrdersProvider>().changeIngredient(customItem!, ingredient);
     });
   }
 
@@ -124,17 +125,14 @@ class _ItemCartState extends State<ItemCart> {
                                   controller: _controller,
                                   shrinkWrap: true,
                                   children: [
-                                    for (int i = 0;
-                                        i < customItem!.ingredients.length;
-                                        i++)
+                                    for (String ingredient in customItem!.ingredients)
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             capitalize(
-                                              toStringIngredients(
-                                                  customItem!.ingredients[i]),
+                                                  ingredient
                                             ),
                                             style: Theme.of(context)
                                                 .textTheme
@@ -143,7 +141,7 @@ class _ItemCartState extends State<ItemCart> {
                                           ElevatedButton(
                                               child: const Text("Rimuovi"),
                                               onPressed: () {
-                                                removeIngredient(i);
+                                                removeIngredient(ingredient);
                                               }),
                                         ],
                                       )
@@ -165,7 +163,7 @@ class _ItemCartState extends State<ItemCart> {
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                     ),
                     Text(
-                      "€${(customItem!.calculatePrice()).toStringAsFixed(2)}",
+                      "€${(customItem!.calculatePrice(context)).toStringAsFixed(2)}",
                       style: const TextStyle(fontSize: 15, color: Colors.red),
                     ),
                   ],
@@ -184,13 +182,13 @@ class _ItemCartState extends State<ItemCart> {
                           scrollDirection: Axis.horizontal,
                           padding: const EdgeInsets.only(right: 10),
                           children: [
-                            for (Ingredients ingredient in Ingredients.values)
+                            for (String ingredient in Provider.of<MenuProvider>(context, listen: false).ingredients.keys)
                               if (!customItem!.ingredients
                                       .contains(ingredient) &&
-                                  toStringIngredients(ingredient)
+                                  ingredient
                                       .contains(searchedValue))
-                                ingredientButton(ingredient,
-                                    Ingredients.values.indexOf(ingredient)),
+
+                                ingredientButton(ingredient, Provider.of<MenuProvider>(context, listen: false).ingredients[ingredient]!),
                           ],
                         ),
                       ),
@@ -250,12 +248,12 @@ class _ItemCartState extends State<ItemCart> {
         ]);
   }
 
-  Widget ingredientButton(Ingredients ingredient, int index) {
+  Widget ingredientButton(String ingredient, double price) {
     return Padding(
       padding: const EdgeInsets.only(left: 10),
       child: OutlinedButton(
         onPressed: () {
-          addIngredients(ingredient);
+          addIngredients(ingredient, price);
         },
         style: OutlinedButton.styleFrom(
           shape: RoundedRectangleBorder(
@@ -265,12 +263,12 @@ class _ItemCartState extends State<ItemCart> {
         child: Row(
           children: [
             Text(
-              capitalize(toStringIngredients(ingredient)),
+              capitalize(ingredient),
               style: TextStyle(color: Colors.grey[800]),
             ),
             const SizedBox(width: 8),
             Text(
-              "+€${costIngredients[ingredient]}",
+              "+€$price",
               style: TextStyle(color: Colors.grey[600], fontSize: 10),
             ),
           ],
@@ -280,6 +278,4 @@ class _ItemCartState extends State<ItemCart> {
   }
 }
 
-String capitalize(String value) {
-  return "${value[0].toUpperCase()}${value.substring(1).toLowerCase()}";
-}
+

@@ -12,9 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'data/data_item.dart';
-import 'data/menu_items_list.dart';
 import 'main.dart';
 import 'providers/page_provider.dart';
 
@@ -63,12 +61,11 @@ Future signIn(
 
     if (context.mounted) {
       Provider.of<MenuProvider>(context, listen: false).retrieveMenu();
-    }
-    //saveAdmin();
-    if (context.mounted) {
+      Provider.of<MenuProvider>(context, listen: false).retrieveIngredients();
       Provider.of<PageProvider>(context, listen: false)
           .changeStatus(LoginStatus.logged);
     }
+    //saveAdmin();
   } on FirebaseAuthException catch (e) {
     String error = e.code;
 
@@ -139,26 +136,26 @@ String getUserMail() {
   return FirebaseAuth.instance.currentUser!.email!;
 }
 
-OrderData retrieveOrderUser(
-  Map<String, dynamic> data,
-  String name,
-  String phone,
-  String address,
-  String uid,
-) {
+OrderData retrieveOrderUser(Map<String, dynamic> data, String name,
+    String phone, String address, String uid, BuildContext context) {
   List<DataItem> itemsList = [];
 
   // Iterate through fields with "ordine" prefix
   int orderIndex = 0;
   while (data.containsKey('ordine$orderIndex')) {
     final Map<String, dynamic> field = data['ordine$orderIndex'];
+
+    DataItem baseItem = Provider.of<MenuProvider>(context, listen: false)
+        .menu
+        .firstWhere((element) => element.name == field["name"]);
+
     itemsList.add(DataItem(
         key: UniqueKey(),
-        image: information[field["name"]]![2],
-        name: field["name"],
-        ingredients: getIngredients(field["ingredients"]),
-        initialPrice: information[field["name"]]![0],
-        category: information[field["name"]]![1],
+        image: baseItem.image,
+        name: baseItem.name,
+        ingredients: field["ingredients"].split(", "),
+        initialPrice: baseItem.initialPrice,
+        category: baseItem.category,
         quantity: field["quantity"]));
 
     orderIndex++;
@@ -178,7 +175,7 @@ OrderData retrieveOrderUser(
   );
 }
 
-Future<List<OrderData>> retrieveOrders() async {
+Future<List<OrderData>> retrieveOrders(BuildContext context) async {
   final snapshot = await FirebaseFirestore.instance.collection('users').get();
   final allUserDocuments = snapshot.docs;
 
@@ -191,9 +188,10 @@ Future<List<OrderData>> retrieveOrders() async {
     final userOrder =
         await userDoc.reference.collection('orders').doc("order").get();
 
-    if (userOrder.exists) {
+    if (userOrder.exists && context.mounted) {
       ordersList.add(
-        retrieveOrderUser(userOrder.data()!, name, phone, address, userDoc.id),
+        retrieveOrderUser(
+            userOrder.data()!, name, phone, address, userDoc.id, context),
       );
     }
   }
@@ -201,13 +199,12 @@ Future<List<OrderData>> retrieveOrders() async {
   return ordersList;
 }
 
-List<Ingredients> getIngredients(String ingredients) {
-  List<String> ingr = ingredients.split(', ');
-  return ingr
-      .map((ingred) => Ingredients.values
-          .firstWhere((e) => e.toString() == 'Ingredients.$ingred'))
-      .toList();
-}
+/*Map<String, double> getIngredients(String ingredients, BuildContext context) {
+  return {
+    for (var e in ingredients.split(', '))
+      e: Provider.of<MenuProvider>(context, listen: false).ingredients[e]!
+  };
+} */
 
 void submitOrder(
   BuildContext ctx, {
@@ -219,7 +216,7 @@ void submitOrder(
   jsonOrder["accepted"] = "True";
   jsonOrder["time-interval"] = order.time;
   jsonOrder["delivery-price"] = order.deliveryPrice;
-  jsonOrder["total"] = order.getTotal().toStringAsFixed(2);
+  jsonOrder["total"] = order.getTotal(ctx).toStringAsFixed(2);
   jsonOrder["price"] = order.personalPrice;
   jsonOrder["delivery-method"] = order.deliveryMethod;
 
@@ -227,7 +224,7 @@ void submitOrder(
     jsonOrder["ordine$index"] = {
       "name": item.name,
       "quantity": item.quantity,
-      "ingredients": item.ingredients.map((ingr) => ingr.name).join(', '),
+      "ingredients": item.ingredients.join(', '),
     };
     index++;
   }
@@ -270,7 +267,7 @@ void saveMenu(List<DataItem> menu) {
   for (DataItem item in menu) {
     jsonMenu[item.name] = {
       "price": item.initialPrice,
-      "ingredients": item.ingredients.map((ingr) => ingr.name).join(', '),
+      "ingredients": item.ingredients.join(', '),
       "category": item.category.name,
     };
   }
@@ -289,23 +286,52 @@ Future<List<DataItem>> getMenu() async {
 
   final menuData = snapshot.data();
 
-  for (String element in menuData!.keys) {
-    Categories category = Categories.values
-        .firstWhere((value) => value.name == menuData[element]["category"]);
+  if (menuData != null) {
+    for (String element in menuData.keys) {
+      Categories category = Categories.values
+          .firstWhere((value) => value.name == menuData[element]["category"]);
 
-    menu.add(
-      DataItem(
-        key: UniqueKey(),
-        name: element,
-        ingredients: getIngredients(menuData[element]["ingredients"]),
-        initialPrice: menuData[element]["price"],
-        category: category,
-        image: listCategories
-            .firstWhere((element) => element.category == category)
-            .icon,
-      ),
-    );
+      menu.add(
+        DataItem(
+          key: UniqueKey(),
+          name: element,
+          ingredients: menuData[element]["ingredients"].split(", "),
+          initialPrice: menuData[element]["price"],
+          category: category,
+          image: listCategories
+              .firstWhere((element) => element.category == category)
+              .icon,
+        ),
+      );
+    }
   }
 
   return menu;
+}
+
+void saveIngredients(Map<String, double> ingredients) {
+  firestoreInstance.collection("menu").doc("ingredients").delete();
+
+  firestoreInstance
+      .collection("menu")
+      .doc("ingredients")
+      .set(ingredients, SetOptions(merge: true));
+}
+
+Future<Map<String, double>> getSavedIngredients() async {
+  final snapshot = await FirebaseFirestore.instance
+      .collection('menu')
+      .doc("ingredients")
+      .get();
+
+  Map<String, double> ingredientsMap = {};
+  if (snapshot.data() != null) {
+    snapshot.data()!.forEach((key, value) {
+      if (value is num) {
+        ingredientsMap[key] = value.toDouble();
+      }
+    });
+  }
+
+  return ingredientsMap;
 }

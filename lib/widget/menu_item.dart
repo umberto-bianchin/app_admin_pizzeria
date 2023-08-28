@@ -1,4 +1,3 @@
-import 'package:app_admin_pizzeria/data/menu_items_list.dart';
 import 'package:app_admin_pizzeria/providers/menu_provider.dart';
 import 'package:app_admin_pizzeria/widget/categories_buttons_tab.dart';
 import 'package:app_admin_pizzeria/widget/menu_item_add.dart';
@@ -46,9 +45,7 @@ class MenuItem extends StatelessWidget {
                             Text(
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(color: Colors.grey),
-                              dataItem.ingredients
-                                  .map((ingr) => toStringIngredients(ingr))
-                                  .join(', '),
+                              dataItem.ingredients.join(', '),
                             ),
                         ],
                       ),
@@ -83,10 +80,7 @@ class MenuItem extends StatelessWidget {
                                       padding: const EdgeInsets.only(
                                           left: 25, right: 20, bottom: 20),
                                       child: Text(
-                                        dataItem.ingredients
-                                            .map((ingr) =>
-                                                toStringIngredients(ingr))
-                                            .join(', '),
+                                        dataItem.ingredients.join(', '),
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall,
@@ -103,7 +97,7 @@ class MenuItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "€${dataItem.calculatePrice().toStringAsFixed(2)}",
+                        "€${dataItem.calculatePrice(context).toStringAsFixed(2)}",
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.red,

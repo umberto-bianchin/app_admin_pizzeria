@@ -1,4 +1,5 @@
 import 'package:app_admin_pizzeria/data/data_item.dart';
+import 'package:flutter/material.dart';
 
 class OrderData {
   OrderData(
@@ -24,10 +25,10 @@ class OrderData {
   double deliveryPrice = 0;
   double personalPrice = 0;
 
-  double getTotal() {
+  double getTotal(BuildContext context) {
     double total = 0;
     for (DataItem item in data) {
-      total += item.calculatePrice();
+      total += item.calculatePrice(context);
     }
     return personalPrice != 0 ? personalPrice : total + deliveryPrice;
   }

@@ -89,7 +89,7 @@ class OrderScreen extends StatelessWidget {
                       children: [
                         Text(item.getIngredients()),
                         Text(
-                          "€ ${item.calculatePrice().toStringAsFixed(2)}",
+                          "€ ${item.calculatePrice(context).toStringAsFixed(2)}",
                         ),
                       ],
                     ),
@@ -123,7 +123,7 @@ class OrderScreen extends StatelessWidget {
                         });
                   },
                   label: Text(
-                    "Totale: € ${order.getTotal().toStringAsFixed(2)}",
+                    "Totale: € ${order.getTotal(context).toStringAsFixed(2)}",
                     style: Theme.of(context)
                         .textTheme
                         .titleMedium!

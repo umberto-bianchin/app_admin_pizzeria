@@ -13,12 +13,12 @@ class OrdersProvider with ChangeNotifier {
 
   List<OrderData> get orders => _orders;
 
-  void updateOrders() {
+  void updateOrders(BuildContext context) {
     listener.add(FirebaseFirestore.instance
         .collection('users')
         .snapshots()
         .listen((result) async {
-      update();
+      update(context);
       notifyListeners();
     }));
   }
@@ -31,7 +31,7 @@ class OrdersProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void update() async {
+  void update(BuildContext context) async {
     final documents =
         await FirebaseFirestore.instance.collection('users').get();
 
@@ -42,7 +42,7 @@ class OrdersProvider with ChangeNotifier {
           .collection("orders")
           .snapshots()
           .listen((event) async {
-        _orders = await retrieveOrders();
+        _orders = await retrieveOrders(context);
         notifyListeners();
       }));
     }
@@ -59,8 +59,8 @@ class OrdersProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void changeIngredient(DataItem item, int index) {
-    item.ingredients.removeAt(index);
+  void changeIngredient(DataItem item, String ingredient) {
+    item.ingredients.remove(ingredient);
     notifyListeners();
   }
 

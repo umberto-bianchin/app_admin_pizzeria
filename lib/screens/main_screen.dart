@@ -25,7 +25,7 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final int index = Provider.of<PageProvider>(context).selectedPage;
-    Provider.of<OrdersProvider>(context, listen: false).updateOrders();
+    Provider.of<OrdersProvider>(context, listen: false).updateOrders(context);
 
     return Scaffold(
       drawer: const SideMenu(),

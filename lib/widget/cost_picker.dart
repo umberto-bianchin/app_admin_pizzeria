@@ -4,12 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CostPicker extends StatelessWidget {
-  CostPicker({super.key, required this.order, required this.isDelivery})
-      : controller = TextEditingController(
-            text: isDelivery
-                ? order.deliveryPrice.toString()
-                : order.getTotal().toString());
-  final TextEditingController controller;
+  CostPicker({super.key, required this.order, required this.isDelivery});
+
   final OrderData order;
   final bool isDelivery;
 
@@ -17,6 +13,11 @@ class CostPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController controller = TextEditingController(
+        text: isDelivery
+            ? order.deliveryPrice.toString()
+            : order.getTotal(context).toString());
+
     return Row(
       mainAxisAlignment:
           isDelivery ? MainAxisAlignment.start : MainAxisAlignment.center,

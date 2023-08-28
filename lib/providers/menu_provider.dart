@@ -4,9 +4,14 @@ import 'package:flutter/material.dart';
 
 class MenuProvider with ChangeNotifier {
   List<DataItem> menu = [];
+  Map<String, double> ingredients = {};
 
   void retrieveMenu() async {
     menu = await getMenu();
+  }
+
+  void retrieveIngredients() async {
+    ingredients = await getSavedIngredients();
   }
 
   void addItem(DataItem item) {
@@ -24,6 +29,20 @@ class MenuProvider with ChangeNotifier {
 
   void notifyAll() {
     saveMenu(menu);
+    notifyListeners();
+  }
+
+  void addIngredient(String ingredient, double price) {
+    ingredients.removeWhere((key, value) => key == ingredient);
+    ingredients[ingredient] = price;
+
+    saveIngredients(ingredients);
+    notifyListeners();
+  }
+
+  void removeIngredient(String ingredient) {
+    ingredients.remove(ingredient);
+    saveIngredients(ingredients);
     notifyListeners();
   }
 }

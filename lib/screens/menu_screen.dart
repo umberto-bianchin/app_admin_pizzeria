@@ -3,6 +3,8 @@ import 'package:app_admin_pizzeria/data/data_item.dart';
 import 'package:app_admin_pizzeria/providers/menu_provider.dart';
 import 'package:app_admin_pizzeria/providers/page_provider.dart';
 import 'package:app_admin_pizzeria/widget/categories_buttons_tab.dart';
+import 'package:app_admin_pizzeria/widget/ingredient_item.dart';
+import 'package:app_admin_pizzeria/widget/ingredient_item_add.dart';
 import 'package:app_admin_pizzeria/widget/menu_item.dart';
 import 'package:app_admin_pizzeria/widget/menu_item_add.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +19,7 @@ class MenuScreen extends StatelessWidget {
         Provider.of<PageProvider>(context).selectedCategory;
 
     final menu = Provider.of<MenuProvider>(context).menu;
+    final ingredients = Provider.of<MenuProvider>(context).ingredients;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -27,12 +30,16 @@ class MenuScreen extends StatelessWidget {
           height: MediaQuery.of(context).size.height / 1.5,
           child: ListView(
             children: [
-              for (DataItem item in menu
-                  .where((element) => element.category == selectedCategory)
-                  .toList())
-                MenuItem(
-                  dataItem: item,
-                )
+              if (selectedCategory != Categories.ingredienti)
+                for (DataItem item in menu
+                    .where((element) => element.category == selectedCategory)
+                    .toList())
+                  MenuItem(
+                    dataItem: item,
+                  )
+              else
+                for (String ingredient in ingredients.keys)
+                  IngredientItem(ingredient: ingredient),
             ],
           ),
         ),
@@ -41,7 +48,11 @@ class MenuScreen extends StatelessWidget {
               showDialog(
                   context: context,
                   builder: (context) {
-                    return const MenuAdd();
+                    if (selectedCategory != Categories.ingredienti) {
+                      return const MenuAdd();
+                    } else {
+                      return  const IngredientAdd();
+                    }
                   });
             },
             child: Text("Aggiungi ${selectedCategory.name}"))
