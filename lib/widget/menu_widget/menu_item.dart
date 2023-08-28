@@ -1,9 +1,9 @@
 import 'package:app_admin_pizzeria/providers/menu_provider.dart';
-import 'package:app_admin_pizzeria/widget/categories_buttons_tab.dart';
-import 'package:app_admin_pizzeria/widget/menu_item_add.dart';
+import 'package:app_admin_pizzeria/widget/menu_widget/categories_buttons_tab.dart';
+import 'package:app_admin_pizzeria/widget/menu_widget/menu_item_add.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../data/data_item.dart';
+import '../../data/data_item.dart';
 
 class MenuItem extends StatelessWidget {
   const MenuItem({super.key, required this.dataItem});

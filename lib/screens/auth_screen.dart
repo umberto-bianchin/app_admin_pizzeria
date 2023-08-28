@@ -1,6 +1,5 @@
 import 'package:app_admin_pizzeria/helper.dart';
 
-import 'package:app_admin_pizzeria/widget/top_banner.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
@@ -22,9 +21,32 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const TopBanner(
-          title: 'Login',
-          icon: Icons.lock,
+        Container(
+          padding: const EdgeInsets.all(30),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ),
+            color: Theme.of(context).primaryColor,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Login',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge!
+                    .copyWith(color: Colors.white),
+              ),
+              const Icon(
+                Icons.lock,
+                size: 30,
+              ),
+            ],
+          ),
         ),
         Expanded(
           child: Form(

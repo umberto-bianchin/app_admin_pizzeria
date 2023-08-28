@@ -1,6 +1,6 @@
 import 'package:app_admin_pizzeria/providers/menu_provider.dart';
-import 'package:app_admin_pizzeria/widget/ingredient_item_add.dart';
-import 'package:app_admin_pizzeria/widget/menu_item_add.dart';
+import 'package:app_admin_pizzeria/widget/menu_widget/ingredient_item_add.dart';
+import 'package:app_admin_pizzeria/widget/menu_widget/menu_item_add.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -59,7 +59,7 @@ class IngredientItem extends StatelessWidget {
                               showDialog(
                                   context: context,
                                   builder: (context) {
-                                    return  IngredientAdd(
+                                    return IngredientAdd(
                                       ingredient: ingredient,
                                     );
                                   });

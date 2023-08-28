@@ -1,6 +1,6 @@
+import 'package:app_admin_pizzeria/main.dart';
 import 'package:app_admin_pizzeria/responsive.dart';
 import 'package:flutter/material.dart';
-import '../constants.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});

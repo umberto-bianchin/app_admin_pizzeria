@@ -1,14 +1,14 @@
 import 'package:app_admin_pizzeria/data/order_data.dart';
 import 'package:app_admin_pizzeria/providers/menu_provider.dart';
 import 'package:app_admin_pizzeria/providers/orders_provider.dart';
-import 'package:app_admin_pizzeria/widget/categories_buttons_tab.dart';
-import 'package:app_admin_pizzeria/widget/menu_item_add.dart';
-import 'package:app_admin_pizzeria/widget/quantity_selector.dart';
-import 'package:app_admin_pizzeria/widget/search_ingredient.dart';
+import 'package:app_admin_pizzeria/widget/menu_widget/categories_buttons_tab.dart';
+import 'package:app_admin_pizzeria/widget/menu_widget/menu_item_add.dart';
+import 'package:app_admin_pizzeria/widget/menu_widget/quantity_selector.dart';
+import 'package:app_admin_pizzeria/widget/menu_widget/search_ingredient.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../data/data_item.dart';
+import '../../data/data_item.dart';
 
 class ItemCart extends StatefulWidget {
   const ItemCart({super.key, required this.dataItem, required this.order});
@@ -125,15 +125,14 @@ class _ItemCartState extends State<ItemCart> {
                                   controller: _controller,
                                   shrinkWrap: true,
                                   children: [
-                                    for (String ingredient in customItem!.ingredients)
+                                    for (String ingredient
+                                        in customItem!.ingredients)
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            capitalize(
-                                                  ingredient
-                                            ),
+                                            capitalize(ingredient),
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodySmall,
@@ -182,13 +181,19 @@ class _ItemCartState extends State<ItemCart> {
                           scrollDirection: Axis.horizontal,
                           padding: const EdgeInsets.only(right: 10),
                           children: [
-                            for (String ingredient in Provider.of<MenuProvider>(context, listen: false).ingredients.keys)
+                            for (String ingredient in Provider.of<MenuProvider>(
+                                    context,
+                                    listen: false)
+                                .ingredients
+                                .keys)
                               if (!customItem!.ingredients
                                       .contains(ingredient) &&
-                                  ingredient
-                                      .contains(searchedValue))
-
-                                ingredientButton(ingredient, Provider.of<MenuProvider>(context, listen: false).ingredients[ingredient]!),
+                                  ingredient.contains(searchedValue))
+                                ingredientButton(
+                                    ingredient,
+                                    Provider.of<MenuProvider>(context,
+                                            listen: false)
+                                        .ingredients[ingredient]!),
                           ],
                         ),
                       ),
@@ -277,5 +282,3 @@ class _ItemCartState extends State<ItemCart> {
     );
   }
 }
-
-

@@ -1,5 +1,5 @@
 import 'package:app_admin_pizzeria/providers/menu_provider.dart';
-import 'package:app_admin_pizzeria/widget/menu_item_cost.dart';
+import 'package:app_admin_pizzeria/widget/menu_widget/menu_item_cost.dart';
 import 'package:app_admin_pizzeria/widget/my_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

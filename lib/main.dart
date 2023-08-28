@@ -1,7 +1,6 @@
 import 'package:app_admin_pizzeria/providers/menu_provider.dart';
 import 'package:app_admin_pizzeria/providers/orders_provider.dart';
 import 'package:app_admin_pizzeria/screens/auth_screen.dart';
-import 'package:app_admin_pizzeria/constants.dart';
 import 'package:app_admin_pizzeria/providers/page_provider.dart';
 import 'package:app_admin_pizzeria/screens/main_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,6 +10,8 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
+const defaultPadding = 16.0;
+
 
 final listDisplay = [const AuthScreen(), const MainScreen()];
 
@@ -38,9 +39,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.light().copyWith(
-        scaffoldBackgroundColor: bgColor,
+        scaffoldBackgroundColor: const Color.fromARGB(255, 238, 238, 238),
         textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
-        canvasColor: secondaryColor,
+        canvasColor: const Color.fromARGB(255, 92, 98, 136),
+        primaryColor: const Color(0xFF2697FF),
       ),
       home: Scaffold(
         body: SafeArea(

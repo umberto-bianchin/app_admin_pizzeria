@@ -1,13 +1,13 @@
 import 'package:app_admin_pizzeria/providers/menu_provider.dart';
 import 'package:app_admin_pizzeria/providers/page_provider.dart';
-import 'package:app_admin_pizzeria/widget/categories_buttons_tab.dart';
-import 'package:app_admin_pizzeria/widget/menu_item_cost.dart';
+import 'package:app_admin_pizzeria/widget/menu_widget/categories_buttons_tab.dart';
+import 'package:app_admin_pizzeria/widget/menu_widget/menu_item_cost.dart';
 import 'package:app_admin_pizzeria/widget/my_dialog.dart';
-import 'package:app_admin_pizzeria/widget/search_ingredient.dart';
+import 'package:app_admin_pizzeria/widget/menu_widget/search_ingredient.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../data/data_item.dart';
+import '../../data/data_item.dart';
 
 class MenuAdd extends StatefulWidget {
   const MenuAdd({super.key, this.initialItem});

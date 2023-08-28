@@ -1,5 +1,5 @@
 import 'package:app_admin_pizzeria/providers/page_provider.dart';
-import 'package:app_admin_pizzeria/widget/menu_item_add.dart';
+import 'package:app_admin_pizzeria/widget/menu_widget/menu_item_add.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -35,14 +35,15 @@ class CategoriesButton extends StatelessWidget {
         children: [
           for (Pair pair in listCategories)
             category(
-                pair.category == selectedCategory
-                    ? Theme.of(context).primaryColor
-                    : Colors.grey,
-                pair.category,
-                pair.icon,
-                pair.category == selectedCategory ? Colors.white : Colors.black,
-                listCategories.indexOf(pair),
-                context),
+              pair.category == selectedCategory
+                  ? Theme.of(context).primaryColor
+                  : Colors.grey,
+              pair.category,
+              pair.icon,
+              pair.category == selectedCategory ? Colors.white : Colors.black,
+              listCategories.indexOf(pair),
+              context,
+            ),
         ],
       ),
     );

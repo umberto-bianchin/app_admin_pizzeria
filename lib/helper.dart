@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:app_admin_pizzeria/data/order_data.dart';
 import 'package:app_admin_pizzeria/providers/menu_provider.dart';
 import 'package:app_admin_pizzeria/providers/orders_provider.dart';
-import 'package:app_admin_pizzeria/widget/categories_buttons_tab.dart';
+import 'package:app_admin_pizzeria/widget/menu_widget/categories_buttons_tab.dart';
 import 'package:app_admin_pizzeria/widget/my_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
