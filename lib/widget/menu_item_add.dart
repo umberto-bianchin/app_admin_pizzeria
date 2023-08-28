@@ -22,6 +22,7 @@ class _MenuAddState extends State<MenuAdd> {
   final ScrollController _controller = ScrollController();
   TextEditingController? nameController;
   TextEditingController? costController;
+  TextEditingController? urlController;
 
   String searchedValue = "";
   DataItem? customItem;
@@ -37,20 +38,18 @@ class _MenuAddState extends State<MenuAdd> {
       costController =
           TextEditingController(text: customItem!.initialPrice.toString());
 
+      urlController = TextEditingController(text: customItem!.image.url);
+
       return;
     }
 
     nameController = TextEditingController();
     costController = TextEditingController();
+    urlController = TextEditingController();
 
     customItem = DataItem(
       key: UniqueKey(),
-      image: listCategories
-          .firstWhere((element) =>
-              element.category ==
-              Provider.of<PageProvider>(context, listen: false)
-                  .selectedCategory)
-          .icon,
+      image: const NetworkImage("https://i.postimg.cc/Tyy3qhTw/classic.png"),
       name: "",
       ingredients: [],
       initialPrice: 0.0,
@@ -113,7 +112,7 @@ class _MenuAddState extends State<MenuAdd> {
                       ),
                     ),
                     Image(
-                      image: AssetImage(customItem!.image),
+                      image: customItem!.image,
                       height: 100.0,
                     ),
                     Column(
@@ -131,6 +130,34 @@ class _MenuAddState extends State<MenuAdd> {
                   ],
                 ),
                 const SizedBox(height: 10),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 400,
+                      child: TextField(
+                        controller: urlController,
+                        autocorrect: false,
+                        style: Theme.of(context).textTheme.titleLarge,
+                        decoration:
+                            const InputDecoration(hintText: "Inserisci url"),
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    OutlinedButton(
+                      onPressed: () {
+                        if (urlController!.text != "") {
+                          setState(() {
+                            customItem!.image =
+                                NetworkImage(urlController!.text);
+                          });
+                        }
+                      },
+                      child: const Text('Anteprima'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 30),
                 if (customItem!.category != Categories.bibite)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,7 +166,7 @@ class _MenuAddState extends State<MenuAdd> {
                       const Text(
                         "Ingredienti:",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                            fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                       SizedBox(
                         child: Container(

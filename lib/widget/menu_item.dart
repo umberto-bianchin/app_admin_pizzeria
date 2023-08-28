@@ -139,7 +139,7 @@ class MenuItem extends StatelessWidget {
             Positioned(
               left: 0.0,
               child: Image(
-                image: AssetImage(dataItem.image),
+                image: dataItem.image,
                 height: 100.0,
                 width: 100.0,
               ),

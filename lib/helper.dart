@@ -216,7 +216,7 @@ void submitOrder(
   jsonOrder["accepted"] = "True";
   jsonOrder["time-interval"] = order.time;
   jsonOrder["delivery-price"] = order.deliveryPrice;
-  jsonOrder["total"] = order.getTotal(ctx).toStringAsFixed(2);
+  jsonOrder["total"] = order.getTotal(ctx);
   jsonOrder["price"] = order.personalPrice;
   jsonOrder["delivery-method"] = order.deliveryMethod;
 
@@ -269,6 +269,7 @@ void saveMenu(List<DataItem> menu) {
       "price": item.initialPrice,
       "ingredients": item.ingredients.join(', '),
       "category": item.category.name,
+      "imageUrl": item.image.url,
     };
   }
 
@@ -298,9 +299,7 @@ Future<List<DataItem>> getMenu() async {
           ingredients: menuData[element]["ingredients"].split(", "),
           initialPrice: menuData[element]["price"],
           category: category,
-          image: listCategories
-              .firstWhere((element) => element.category == category)
-              .icon,
+          image: NetworkImage(menuData[element]["imageUrl"]),
         ),
       );
     }

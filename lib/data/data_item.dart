@@ -14,7 +14,7 @@ class DataItem {
     this.quantity = 1,
   });
 
-  final String image;
+  NetworkImage image;
   String name;
   List<String> ingredients;
   double initialPrice;

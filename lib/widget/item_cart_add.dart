@@ -89,7 +89,7 @@ class _ItemCartState extends State<ItemCart> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Image(
-                      image: AssetImage(customItem!.image),
+                      image: customItem!.image,
                       height: 100.0,
                     ),
                     NumericStepButton(
