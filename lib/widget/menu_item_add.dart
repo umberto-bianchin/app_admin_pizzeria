@@ -47,11 +47,10 @@ class _MenuAddState extends State<MenuAdd> {
     customItem = DataItem(
       key: UniqueKey(),
       image: listCategories
-          .where((element) =>
+          .firstWhere((element) =>
               element.category ==
               Provider.of<PageProvider>(context, listen: false)
                   .selectedCategory)
-          .toList()[0]
           .icon,
       name: "",
       ingredients: [],

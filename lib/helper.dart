@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:app_admin_pizzeria/data/order_data.dart';
+import 'package:app_admin_pizzeria/providers/menu_provider.dart';
 import 'package:app_admin_pizzeria/providers/orders_provider.dart';
+import 'package:app_admin_pizzeria/widget/categories_buttons_tab.dart';
 import 'package:app_admin_pizzeria/widget/my_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -59,6 +61,9 @@ Future signIn(
       return;
     }
 
+    if (context.mounted) {
+      Provider.of<MenuProvider>(context, listen: false).retrieveMenu();
+    }
     //saveAdmin();
     if (context.mounted) {
       Provider.of<PageProvider>(context, listen: false)
@@ -255,4 +260,52 @@ void sendNotification(String title, String token) async {
       print(error);
     }
   }
+}
+
+void saveMenu(List<DataItem> menu) {
+  final Map<String, dynamic> jsonMenu = {};
+
+  firestoreInstance.collection("menu").doc("elements").delete();
+
+  for (DataItem item in menu) {
+    jsonMenu[item.name] = {
+      "price": item.initialPrice,
+      "ingredients": item.ingredients.map((ingr) => ingr.name).join(', '),
+      "category": item.category.name,
+    };
+  }
+
+  firestoreInstance
+      .collection("menu")
+      .doc("elements")
+      .set(jsonMenu, SetOptions(merge: true));
+}
+
+Future<List<DataItem>> getMenu() async {
+  final List<DataItem> menu = [];
+
+  final snapshot =
+      await FirebaseFirestore.instance.collection('menu').doc("elements").get();
+
+  final menuData = snapshot.data();
+
+  for (String element in menuData!.keys) {
+    Categories category = Categories.values
+        .firstWhere((value) => value.name == menuData[element]["category"]);
+
+    menu.add(
+      DataItem(
+        key: UniqueKey(),
+        name: element,
+        ingredients: getIngredients(menuData[element]["ingredients"]),
+        initialPrice: menuData[element]["price"],
+        category: category,
+        image: listCategories
+            .firstWhere((element) => element.category == category)
+            .icon,
+      ),
+    );
+  }
+
+  return menu;
 }
