@@ -13,7 +13,7 @@ import '../widget/header.dart';
 import '../widget/side_menu.dart';
 
 class MainScreen extends StatelessWidget {
-  const MainScreen({super.key});
+ const MainScreen({super.key});
 
   final List<Widget> _displayed = const [
     DashboardScreen(),

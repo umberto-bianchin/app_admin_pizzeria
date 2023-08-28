@@ -1,3 +1,4 @@
+import 'package:app_admin_pizzeria/widget/categories_buttons_tab.dart';
 import 'package:flutter/material.dart';
 
 enum LoginStatus { notLogged, logged }
@@ -5,12 +6,18 @@ enum LoginStatus { notLogged, logged }
 class PageProvider with ChangeNotifier {
   LoginStatus loginStatus = LoginStatus.notLogged;
   int selectedPage = 0;
+  Categories selectedCategory = Categories.pizza;
   String page = "Dashboard";
 
   String get getPage => page;
 
   void changeStatus(LoginStatus status) {
     loginStatus = status;
+    notifyListeners();
+  }
+
+  void changeCategory(Categories category) {
+    selectedCategory = category;
     notifyListeners();
   }
 

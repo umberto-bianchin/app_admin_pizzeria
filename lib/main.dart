@@ -1,3 +1,4 @@
+import 'package:app_admin_pizzeria/providers/menu_provider.dart';
 import 'package:app_admin_pizzeria/providers/orders_provider.dart';
 import 'package:app_admin_pizzeria/screens/auth_screen.dart';
 import 'package:app_admin_pizzeria/constants.dart';
@@ -24,6 +25,7 @@ void main() async {
     providers: [
       ChangeNotifierProvider(create: (_) => PageProvider()),
       ChangeNotifierProvider(create: (_) => OrdersProvider()),
+      ChangeNotifierProvider(create: (_) => MenuProvider()),
     ],
     child: const MyApp(),
   ));

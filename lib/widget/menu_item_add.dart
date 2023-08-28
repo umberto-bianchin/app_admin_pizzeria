@@ -1,41 +1,69 @@
 import 'package:app_admin_pizzeria/data/menu_items_list.dart';
-import 'package:app_admin_pizzeria/data/order_data.dart';
-import 'package:app_admin_pizzeria/providers/orders_provider.dart';
+import 'package:app_admin_pizzeria/providers/menu_provider.dart';
+import 'package:app_admin_pizzeria/providers/page_provider.dart';
 import 'package:app_admin_pizzeria/widget/categories_buttons_tab.dart';
-import 'package:app_admin_pizzeria/widget/quantity_selector.dart';
+import 'package:app_admin_pizzeria/widget/menu_item_cost.dart';
+import 'package:app_admin_pizzeria/widget/my_dialog.dart';
 import 'package:app_admin_pizzeria/widget/search_ingredient.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../data/data_item.dart';
 
-class ItemCart extends StatefulWidget {
-  const ItemCart({super.key, required this.dataItem, required this.order});
+class MenuAdd extends StatefulWidget {
+  const MenuAdd({super.key, this.initialItem});
 
-  final DataItem dataItem;
-  final OrderData order;
+  final DataItem? initialItem;
 
   @override
-  State<ItemCart> createState() => _ItemCartState();
+  State<MenuAdd> createState() => _MenuAddState();
 }
 
-class _ItemCartState extends State<ItemCart> {
-  String? dropdownValue;
+class _MenuAddState extends State<MenuAdd> {
   final ScrollController _controller = ScrollController();
+  TextEditingController? nameController;
+  TextEditingController? costController;
+
   String searchedValue = "";
   DataItem? customItem;
-  int quantity = 1;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.initialItem != null) {
+      customItem = widget.initialItem;
+
+      nameController = TextEditingController(text: customItem!.name);
+      costController =
+          TextEditingController(text: customItem!.initialPrice.toString());
+
+      return;
+    }
+
+    nameController = TextEditingController();
+    costController = TextEditingController();
+
+    customItem = DataItem(
+      key: UniqueKey(),
+      image: listCategories
+          .where((element) =>
+              element.category ==
+              Provider.of<PageProvider>(context, listen: false)
+                  .selectedCategory)
+          .toList()[0]
+          .icon,
+      name: "",
+      ingredients: [],
+      initialPrice: 0.0,
+      category:
+          Provider.of<PageProvider>(context, listen: false).selectedCategory,
+    );
+  }
 
   void setSearchedValue(String search) {
     setState(() {
       searchedValue = search;
-    });
-  }
-
-  void setQuantity(int x) {
-    setState(() {
-      quantity = x;
-      customItem!.quantity = x;
     });
   }
 
@@ -47,14 +75,8 @@ class _ItemCartState extends State<ItemCart> {
 
   void removeIngredient(int index) {
     setState(() {
-      context.read<OrdersProvider>().changeIngredient(customItem!, index);
+      customItem!.ingredients.removeAt(index);
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    customItem = widget.dataItem;
   }
 
   @override
@@ -62,13 +84,8 @@ class _ItemCartState extends State<ItemCart> {
     return SimpleDialog(
         alignment: Alignment.center,
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text(
-              customItem!.name,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
             IconButton(
                 icon: const Icon(Icons.close),
                 color: const Color(0xFF1F91E7),
@@ -85,16 +102,33 @@ class _ItemCartState extends State<ItemCart> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    SizedBox(
+                      width: 400,
+                      child: TextField(
+                        controller: nameController,
+                        autocorrect: false,
+                        style: Theme.of(context).textTheme.titleLarge,
+                        decoration:
+                            const InputDecoration(hintText: "Inserisci nome"),
+                      ),
+                    ),
                     Image(
                       image: AssetImage(customItem!.image),
                       height: 100.0,
                     ),
-                    NumericStepButton(
-                      onChanged: setQuantity,
-                      minValue: 0,
-                      initialValue: customItem!.quantity,
+                    Column(
+                      children: [
+                        const Text(
+                          "Prezzo\t\t\t",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15),
+                        ),
+                        MenuItemCost(
+                          costController: costController!,
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -110,7 +144,6 @@ class _ItemCartState extends State<ItemCart> {
                             fontWeight: FontWeight.bold, fontSize: 15),
                       ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height / 5,
                         child: Container(
                           padding: const EdgeInsets.all(16),
                           child: Padding(
@@ -156,20 +189,6 @@ class _ItemCartState extends State<ItemCart> {
                       ),
                     ],
                   ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Prezzo\t\t\t",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                    ),
-                    Text(
-                      "€${(customItem!.calculatePrice()).toStringAsFixed(2)}",
-                      style: const TextStyle(fontSize: 15, color: Colors.red),
-                    ),
-                  ],
-                ),
                 if (customItem!.category != Categories.bibite)
                   Column(
                     children: [
@@ -218,15 +237,34 @@ class _ItemCartState extends State<ItemCart> {
                     const SizedBox(width: 5),
                     OutlinedButton(
                       onPressed: () {
-                        context
-                            .read<OrdersProvider>()
-                            .changeQuantity(customItem!, quantity);
-
-                        if (quantity == 0) {
-                          context
-                              .read<OrdersProvider>()
-                              .removeItem(widget.order, customItem!);
+                        if (nameController!.text == "" ||
+                            double.tryParse(costController!.text) == null ||
+                            (customItem!.ingredients.isEmpty &&
+                                customItem!.category != Categories.bibite)) {
+                          MyDialog.showMyDialog(context,
+                              message: "Compila tutti i campi",
+                              title: "Errore");
+                          return;
                         }
+
+                        customItem!.name = nameController!.text;
+                        customItem!.initialPrice =
+                            double.parse(costController!.text);
+
+                        information[customItem!.name] = [
+                          customItem!.initialPrice,
+                          customItem!.category,
+                          customItem!.image,
+                          customItem!.ingredients
+                        ];
+
+                        if (widget.initialItem == null) {
+                          Provider.of<MenuProvider>(context, listen: false)
+                              .addItem(customItem!);
+                        }
+
+                        Provider.of<MenuProvider>(context, listen: false)
+                            .notifyAll();
 
                         Navigator.pop(context);
                       },

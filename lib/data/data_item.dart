@@ -1,12 +1,6 @@
+import 'package:app_admin_pizzeria/widget/categories_buttons_tab.dart';
 import 'package:flutter/material.dart';
 import 'menu_items_list.dart';
-
-enum Categories {
-  pizza,
-  bibite,
-  panini,
-  kebab,
-}
 
 class DataItem {
   DataItem({
@@ -20,9 +14,9 @@ class DataItem {
   });
 
   final String image;
-  final String name;
+  String name;
   List<Ingredients> ingredients;
-  final double initialPrice;
+  double initialPrice;
   final Categories category;
   final UniqueKey key;
   int quantity;
@@ -34,13 +28,17 @@ class DataItem {
   }
 
   double calculatePrice() {
-    double price = initialPrice;
-    for (Ingredients ingredient in ingredients) {
-      if (!information[name]![3].contains(ingredient)) {
-        price = price + costIngredients[ingredient]!;
+    try {
+      double price = initialPrice;
+      for (Ingredients ingredient in ingredients) {
+        if (!information[name]![3].contains(ingredient)) {
+          price = price + costIngredients[ingredient]!;
+        }
       }
+      return price * quantity;
+    } catch (e) {
+      return 0.0;
     }
-    return price * quantity;
   }
 
   DataItem copy() {

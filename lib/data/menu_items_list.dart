@@ -1,4 +1,4 @@
-import 'package:app_admin_pizzeria/data/data_item.dart';
+import 'package:app_admin_pizzeria/widget/categories_buttons_tab.dart';
 
 enum Ingredients {
   pomodoro,
@@ -124,3 +124,4 @@ Map<Ingredients, double> costIngredients = {
   Ingredients.salamino_piccante: 0.55,
   Ingredients.verdure_al_forno: 0.55,
 };
+
