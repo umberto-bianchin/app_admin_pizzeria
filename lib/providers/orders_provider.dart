@@ -24,9 +24,7 @@ class OrdersProvider with ChangeNotifier {
   }
 
   void updatePrice(OrderData order, double price, bool isDelivery) {
-    isDelivery
-        ? order.deliveryPrice = price
-        : order.personalPrice = price;
+    isDelivery ? order.deliveryPrice = price : order.personalPrice = price;
 
     notifyListeners();
   }
@@ -42,8 +40,17 @@ class OrdersProvider with ChangeNotifier {
           .collection("orders")
           .snapshots()
           .listen((event) async {
-        _orders = await retrieveOrders(context);
-        notifyListeners();
+        final order = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(document.id)
+            .collection('orders')
+            .doc("order")
+            .get();
+
+        if (order.exists && context.mounted) {
+          _orders = await retrieveOrders(context);
+          notifyListeners();
+        }
       }));
     }
   }

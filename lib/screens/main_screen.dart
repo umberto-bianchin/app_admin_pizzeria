@@ -13,13 +13,13 @@ import '../widget/header.dart';
 import '../widget/side_menu.dart';
 
 class MainScreen extends StatelessWidget {
- const MainScreen({super.key});
+  MainScreen({super.key});
 
-  final List<Widget> _displayed = const [
-    DashboardScreen(),
+  final List<Widget> _displayed =  [
+    const DashboardScreen(),
     MapScreen(),
-    MenuScreen(),
-    OrderScreen(),
+    const MenuScreen(),
+    const OrderScreen(),
   ];
 
   @override

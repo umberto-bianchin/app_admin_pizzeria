@@ -12,8 +12,7 @@ import 'firebase_options.dart';
 final navigatorKey = GlobalKey<NavigatorState>();
 const defaultPadding = 16.0;
 
-
-final listDisplay = [const AuthScreen(), const MainScreen()];
+final listDisplay = [const AuthScreen(), MainScreen()];
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
