@@ -199,51 +199,53 @@ Future<List<OrderData>> retrieveOrders(BuildContext context) async {
   return ordersList;
 }
 
-/*Map<String, double> getIngredients(String ingredients, BuildContext context) {
-  return {
-    for (var e in ingredients.split(', '))
-      e: Provider.of<MenuProvider>(context, listen: false).ingredients[e]!
-  };
-} */
-
 void submitOrder(
   BuildContext ctx, {
   required OrderData order,
+  required bool accepted,
 }) async {
-  final Map<String, dynamic> jsonOrder = {};
-  int index = 0;
+  if (accepted) {
+    final Map<String, dynamic> jsonOrder = {};
+    int index = 0;
 
-  jsonOrder["accepted"] = "True";
-  jsonOrder["time-interval"] = order.time;
-  jsonOrder["delivery-price"] = order.deliveryPrice;
-  jsonOrder["total"] = order.getTotal(ctx);
-  jsonOrder["price"] = order.personalPrice;
-  jsonOrder["delivery-method"] = order.deliveryMethod;
+    jsonOrder["accepted"] = "True";
+    jsonOrder["time-interval"] = order.time;
+    jsonOrder["delivery-price"] = order.deliveryPrice;
+    jsonOrder["total"] = order.getTotal(ctx);
+    jsonOrder["price"] = order.personalPrice;
+    jsonOrder["delivery-method"] = order.deliveryMethod;
 
-  for (DataItem item in order.data) {
-    jsonOrder["ordine$index"] = {
-      "name": item.name,
-      "quantity": item.quantity,
-      "ingredients": item.ingredients.join(', '),
-    };
-    index++;
+    for (DataItem item in order.data) {
+      jsonOrder["ordine$index"] = {
+        "name": item.name,
+        "quantity": item.quantity,
+        "ingredients": item.ingredients.join(', '),
+      };
+      index++;
+    }
+
+    firestoreInstance
+        .collection("users")
+        .doc(order.uid)
+        .collection("orders")
+        .doc("order")
+        .set(jsonOrder, SetOptions(merge: true));
+
+    Provider.of<OrdersProvider>(ctx, listen: false).confirmOrder(order);
+  } else {
+    firestoreInstance
+        .collection("users")
+        .doc(order.uid)
+        .collection("orders")
+        .doc("order")
+        .delete();
   }
-
-  firestoreInstance
-      .collection("users")
-      .doc(order.uid)
-      .collection("orders")
-      .doc("order")
-      .set(jsonOrder, SetOptions(merge: true));
-
-  Provider.of<OrdersProvider>(ctx, listen: false).confirmOrder(order);
 
   final snapshot =
       await firestoreInstance.collection("users").doc(order.uid).get();
 
   String token = snapshot.data()!["token"];
-
-  sendNotification("Ordine confermato", token);
+  sendNotification(accepted ? "Ordine confermato" : "Ordine rifiutato", token);
 }
 
 void sendNotification(String title, String token) async {
@@ -270,6 +272,7 @@ void saveMenu(List<DataItem> menu) {
       "ingredients": item.ingredients.join(', '),
       "category": item.category.name,
       "imageUrl": item.image.url,
+      "important": item.important,
     };
   }
 
@@ -296,6 +299,7 @@ Future<List<DataItem>> getMenu() async {
         DataItem(
           key: UniqueKey(),
           name: element,
+          important: menuData[element]["important"],
           ingredients: menuData[element]["ingredients"].split(", "),
           initialPrice: menuData[element]["price"],
           category: category,

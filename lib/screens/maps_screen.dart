@@ -1,3 +1,4 @@
+import 'package:app_admin_pizzeria/main.dart';
 import 'package:flutter/material.dart';
 
 class MapScreen extends StatelessWidget {
@@ -5,6 +6,10 @@ class MapScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const Expanded(
+        child: Padding(
+      padding: EdgeInsets.all(defaultPadding),
+      child: Column(),
+    ));
   }
 }

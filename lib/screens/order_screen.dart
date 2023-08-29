@@ -26,8 +26,35 @@ class OrderScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final order = orders[index];
               return ExpansionTile(
-                title: Text(order.name),
-                subtitle: Text(order.deliveryMethod),
+                title: Row(
+                  children: [
+                    orders[index].accepted == "True"
+                        ? const Icon(
+                            Icons.verified,
+                            color: Colors.green,
+                            size: 30,
+                          )
+                        : const Icon(
+                            Icons.verified,
+                            color: Color.fromARGB(255, 234, 211, 7),
+                            size: 30,
+                          ),
+                    const SizedBox(width: 20),
+                    Text(
+                      order.name,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ],
+                ),
+                subtitle: Row(
+                  children: [
+                    const SizedBox(width: 50),
+                    Text(
+                      order.deliveryMethod,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ],
+                ),
                 children: [
                   ListTile(
                     title: const Text(
@@ -134,17 +161,39 @@ class OrderScreen extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(defaultPadding),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: order.accepted == "False"
-                              ? Colors.blue
-                              : Colors.green),
-                      onPressed: () {
-                        submitOrder(context, order: order);
-                      },
-                      child: Text(order.accepted == "False"
-                          ? "Conferma ordine"
-                          : "Riconferma ordine"),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 155,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red),
+                            onPressed: () {
+                              submitOrder(context,
+                                  order: order, accepted: false);
+                            },
+                            child: const Text("Rifiuta ordine"),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        SizedBox(
+                          width: 155,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: order.accepted == "False"
+                                    ? Colors.blue
+                                    : Colors.green),
+                            onPressed: () {
+                              submitOrder(context,
+                                  order: order, accepted: true);
+                            },
+                            child: Text(order.accepted == "False"
+                                ? "Conferma ordine"
+                                : "Modifica ordine"),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

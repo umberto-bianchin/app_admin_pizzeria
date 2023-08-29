@@ -26,6 +26,7 @@ class _MenuAddState extends State<MenuAdd> {
 
   String searchedValue = "";
   DataItem? customItem;
+  bool showSpecialPizza = false;
 
   @override
   void initState() {
@@ -39,6 +40,8 @@ class _MenuAddState extends State<MenuAdd> {
           TextEditingController(text: customItem!.initialPrice.toString());
 
       urlController = TextEditingController(text: customItem!.image.url);
+
+      showSpecialPizza = customItem!.important;
 
       return;
     }
@@ -136,9 +139,9 @@ class _MenuAddState extends State<MenuAdd> {
                     SizedBox(
                       width: 400,
                       child: TextField(
+                        style: Theme.of(context).textTheme.bodyLarge,
                         controller: urlController,
                         autocorrect: false,
-                        style: Theme.of(context).textTheme.titleLarge,
                         decoration:
                             const InputDecoration(hintText: "Inserisci url"),
                       ),
@@ -192,7 +195,7 @@ class _MenuAddState extends State<MenuAdd> {
                                             capitalize(ingredient),
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodySmall,
+                                                .bodyLarge,
                                           ),
                                           ElevatedButton(
                                               child: const Text("Rimuovi"),
@@ -240,6 +243,23 @@ class _MenuAddState extends State<MenuAdd> {
                   ),
                 const SizedBox(height: 20),
                 Row(
+                  children: [
+                    const Text(
+                      'Mostra nelle pizze del giorno',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    const SizedBox(height: 20),
+                    Checkbox(
+                        value: showSpecialPizza,
+                        onChanged: (value) {
+                          setState(() {
+                            showSpecialPizza = !showSpecialPizza;
+                          });
+                        }),
+                  ],
+                ),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     OutlinedButton(
@@ -274,13 +294,15 @@ class _MenuAddState extends State<MenuAdd> {
                         customItem!.initialPrice =
                             double.parse(costController!.text);
 
+                        customItem!.important = showSpecialPizza;
+
                         if (widget.initialItem == null) {
                           Provider.of<MenuProvider>(context, listen: false)
                               .addItem(customItem!);
+                        } else {
+                          Provider.of<MenuProvider>(context, listen: false)
+                              .notifyAll();
                         }
-
-                        Provider.of<MenuProvider>(context, listen: false)
-                            .notifyAll();
 
                         Navigator.pop(context);
                       },

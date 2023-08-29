@@ -33,14 +33,24 @@ class MenuItem extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            overflow: TextOverflow.ellipsis,
-                            dataItem.name,
-                            style: Theme.of(context).textTheme.titleSmall,
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                overflow: TextOverflow.ellipsis,
+                                dataItem.name,
+                                style: Theme.of(context).textTheme.titleSmall,
+                              ),
+                              const SizedBox(width: 10.0),
+                              if (dataItem.important)
+                                const Icon(
+                                  Icons.star_outline_rounded,
+                                  size: 25,
+                                  color: Color.fromARGB(255, 234, 211, 6),
+                                )
+                            ],
                           ),
-                          const SizedBox(
-                            height: 4.0,
-                          ),
+                          const SizedBox(height: 4.0),
                           if (dataItem.category != Categories.bibite)
                             Text(
                               overflow: TextOverflow.ellipsis,

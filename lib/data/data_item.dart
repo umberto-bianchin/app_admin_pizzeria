@@ -11,6 +11,7 @@ class DataItem {
     required this.ingredients,
     required this.initialPrice,
     required this.category,
+    this.important = false,
     this.quantity = 1,
   });
 
@@ -21,6 +22,7 @@ class DataItem {
   final Categories category;
   final UniqueKey key;
   int quantity;
+  bool important;
 
   String get dataName => name;
 

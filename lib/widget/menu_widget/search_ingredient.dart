@@ -16,7 +16,7 @@ class _SearchIngredientState extends State<SearchIngredient> {
   );
   Widget displayed = const Text(
     "Aggiungi un ingrediente:",
-    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
   );
 
   @override
