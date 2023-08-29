@@ -49,8 +49,11 @@ class OrdersProvider with ChangeNotifier {
 
         if (order.exists && context.mounted) {
           _orders = await retrieveOrders(context);
-          notifyListeners();
+        } else {
+          _orders.removeWhere((element) => element.uid == document.id);
         }
+
+        notifyListeners();
       }));
     }
   }

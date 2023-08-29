@@ -21,26 +21,36 @@ class MapScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final orders = Provider.of<OrdersProvider>(context).orders;
+
     return Expanded(
         child: Padding(
       padding: const EdgeInsets.all(defaultPadding),
       child: Column(
         children: [
           SizedBox(
-            width: MediaQuery.of(context).size.width / 2,
-            height: MediaQuery.of(context).size.height / 2,
+            width: MediaQuery.of(context).size.width / 1.2,
+            height: MediaQuery.of(context).size.height / 1.2,
             child: FutureBuilder(
-              future: _createMarkers(context),
+              future: _createMarkers(orders),
               builder: (context, marker) {
-                return GoogleMap(
-                  myLocationEnabled: false,
-                  markers: marker.data!,
-                  mapType: MapType.normal,
-                  initialCameraPosition: _kGooglePlex,
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-                  },
-                );
+                return marker.data != null
+                    ? GoogleMap(
+                        myLocationEnabled: false,
+                        markers: marker.data!,
+                        mapType: MapType.normal,
+                        initialCameraPosition: _kGooglePlex,
+                        onMapCreated: (GoogleMapController controller) {
+                          _controller.complete(controller);
+                        },
+                      )
+                    : const Center(
+                        child: SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
               },
             ),
           )
@@ -65,9 +75,7 @@ Future<LatLng?> getAddressCoordinates(String address) async {
   return null;
 }
 
-Future<Set<Marker>> _createMarkers(BuildContext context) async {
-  final orders = Provider.of<OrdersProvider>(context).orders;
-
+Future<Set<Marker>> _createMarkers(List<OrderData> orders) async {
   final Set<Marker> markers = {};
 
   for (final order in orders) {

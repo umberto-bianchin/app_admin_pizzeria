@@ -1,5 +1,4 @@
 import 'package:app_admin_pizzeria/data/data_item.dart';
-import 'package:app_admin_pizzeria/data/order_data.dart';
 import 'package:app_admin_pizzeria/helper.dart';
 import 'package:app_admin_pizzeria/main.dart';
 import 'package:app_admin_pizzeria/providers/orders_provider.dart';
@@ -14,8 +13,7 @@ class OrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final orderProvider = Provider.of<OrdersProvider>(context);
-    List<OrderData> orders = orderProvider.orders;
+    final orders = Provider.of<OrdersProvider>(context).orders;
 
     if (orders.isNotEmpty) {
       return Expanded(
@@ -171,7 +169,7 @@ class OrderScreen extends StatelessWidget {
                                 backgroundColor: Colors.red),
                             onPressed: () {
                               submitOrder(context,
-                                  order: order, accepted: false);
+                                  order: order, accepted: false);                
                             },
                             child: const Text("Rifiuta ordine"),
                           ),

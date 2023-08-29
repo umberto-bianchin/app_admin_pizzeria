@@ -7,7 +7,7 @@ class PageProvider with ChangeNotifier {
   LoginStatus loginStatus = LoginStatus.notLogged;
   int selectedPage = 0;
   Categories selectedCategory = Categories.pizza;
-  String page = "Dashboard";
+  String page = "Ordini";
 
   String get getPage => page;
 
@@ -26,13 +26,11 @@ class PageProvider with ChangeNotifier {
 
     switch (page) {
       case 0:
-        this.page = "Dashboard";
+        this.page = "Ordini";
       case 1:
         this.page = "Mappa";
       case 2:
         this.page = "Menu";
-      case 3:
-        this.page = "Ordini";
     }
     notifyListeners();
   }

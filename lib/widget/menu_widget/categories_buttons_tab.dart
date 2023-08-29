@@ -7,13 +7,13 @@ enum Categories {
   pizza,
   bibite,
   panini,
-  kebab,
+  panari,
   ingredienti,
 }
 
 final List<Pair> listCategories = [
   Pair("assets/images/classic.png", Categories.pizza),
-  Pair("assets/images/mexican.png", Categories.kebab),
+  Pair("assets/images/mexican.png", Categories.panari),
   Pair("assets/images/burger.png", Categories.panini),
   Pair("assets/images/drink.png", Categories.bibite),
   Pair("assets/images/pastry.png", Categories.ingredienti)

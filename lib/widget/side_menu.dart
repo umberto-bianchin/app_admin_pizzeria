@@ -18,8 +18,8 @@ class SideMenu extends StatelessWidget {
             child: Image.asset("assets/images/pizzeria.png"),
           ),
           DrawerListTile(
-            title: "Dashboard",
-            svgSrc: "assets/icons/menu_dashboard.svg",
+            title: "Ordini",
+            svgSrc: "assets/icons/menu_store.svg",
             press: () {
               provider.changePage(0);
             },
@@ -36,13 +36,6 @@ class SideMenu extends StatelessWidget {
             svgSrc: "assets/icons/menu_doc.svg",
             press: () {
               provider.changePage(2);
-            },
-          ),
-          DrawerListTile(
-            title: "Ordini",
-            svgSrc: "assets/icons/menu_store.svg",
-            press: () {
-              provider.changePage(3);
             },
           ),
         ],

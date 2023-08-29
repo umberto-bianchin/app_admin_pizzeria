@@ -2,7 +2,6 @@ import 'package:app_admin_pizzeria/main.dart';
 import 'package:app_admin_pizzeria/providers/orders_provider.dart';
 import 'package:app_admin_pizzeria/providers/page_provider.dart';
 import 'package:app_admin_pizzeria/responsive.dart';
-import 'package:app_admin_pizzeria/screens/dashboard_screen.dart';
 import 'package:app_admin_pizzeria/screens/maps_screen.dart';
 import 'package:app_admin_pizzeria/screens/menu_screen.dart';
 import 'package:app_admin_pizzeria/screens/order_screen.dart';
@@ -15,11 +14,10 @@ import '../widget/side_menu.dart';
 class MainScreen extends StatelessWidget {
   MainScreen({super.key});
 
-  final List<Widget> _displayed =  [
-    const DashboardScreen(),
+  final List<Widget> _displayed = [
+    const OrderScreen(),
     MapScreen(),
     const MenuScreen(),
-    const OrderScreen(),
   ];
 
   @override
