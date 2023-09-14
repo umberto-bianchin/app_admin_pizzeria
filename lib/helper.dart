@@ -264,8 +264,6 @@ void sendNotification(String title, String token) async {
 void saveMenu(List<DataItem> menu) {
   final Map<String, dynamic> jsonMenu = {};
 
-  firestoreInstance.collection("menu").doc("elements").delete();
-
   for (DataItem item in menu) {
     jsonMenu[item.name] = {
       "price": item.initialPrice,
@@ -276,10 +274,7 @@ void saveMenu(List<DataItem> menu) {
     };
   }
 
-  firestoreInstance
-      .collection("menu")
-      .doc("elements")
-      .set(jsonMenu, SetOptions(merge: true));
+  firestoreInstance.collection("menu").doc("elements").set(jsonMenu);
 }
 
 Future<List<DataItem>> getMenu() async {
@@ -313,12 +308,7 @@ Future<List<DataItem>> getMenu() async {
 }
 
 void saveIngredients(Map<String, double> ingredients) {
-  firestoreInstance.collection("menu").doc("ingredients").delete();
-
-  firestoreInstance
-      .collection("menu")
-      .doc("ingredients")
-      .set(ingredients, SetOptions(merge: true));
+  firestoreInstance.collection("menu").doc("ingredients").set(ingredients);
 }
 
 Future<Map<String, double>> getSavedIngredients() async {
