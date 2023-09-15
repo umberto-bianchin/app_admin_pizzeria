@@ -100,6 +100,7 @@ class IngredientAdd extends StatelessWidget {
                         Provider.of<MenuProvider>(context, listen: false)
                             .addIngredient(nameController.text.toLowerCase(),
                                 double.parse(costController.text));
+                          
 
                         Navigator.pop(context);
                       },

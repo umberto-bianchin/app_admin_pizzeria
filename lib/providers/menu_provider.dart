@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class MenuProvider with ChangeNotifier {
   List<DataItem> menu = [];
-  Map<String, double> ingredients = {};
+  Map<String, List<dynamic>> ingredients = {};
 
   void retrieveMenu() async {
     menu = await getMenu();
@@ -17,14 +17,41 @@ class MenuProvider with ChangeNotifier {
   void addItem(DataItem item) {
     menu.removeWhere((element) => element.name == item.name);
     menu.add(item);
-    saveMenu(menu);
-    notifyListeners();
+    notifyAll();
   }
 
   void removeItem(DataItem item) {
     menu.remove(item);
+    notifyAll();
+  }
+
+  void hideIngredient(String ingredient, bool value) {
+    ingredients[ingredient]![1] = value;
+    changeVisibilityWithIngredient(ingredient, value);
+    saveIngredients(ingredients);
+    notifyAll();
+  }
+
+  void changeVisibilityWithIngredient(String ingredient, bool value) {
+    if (!value) {
+      for (DataItem item in menu) {
+        if (item.ingredients.any((ingr) => ingr == ingredient)) {
+          item.available = false;
+        }
+      }
+    } else {
+      for (DataItem item in menu) {
+        if (item.ingredients.every(
+            (ingr) => ingredients.containsKey(ingr) && ingredients[ingr]![1])) {
+          item.available = true;
+        }
+      }
+    }
+  }
+
+  void changeVisibilityItem(DataItem item) {
+    item.available = !item.available;
     saveMenu(menu);
-    notifyListeners();
   }
 
   void notifyAll() {
@@ -34,15 +61,16 @@ class MenuProvider with ChangeNotifier {
 
   void addIngredient(String ingredient, double price) {
     ingredients.removeWhere((key, value) => key == ingredient);
-    ingredients[ingredient] = price;
-
+    ingredients[ingredient] = [price, true];
+    changeVisibilityWithIngredient(ingredient, true);
     saveIngredients(ingredients);
-    notifyListeners();
+    notifyAll();
   }
 
   void removeIngredient(String ingredient) {
     ingredients.remove(ingredient);
+    changeVisibilityWithIngredient(ingredient, false);
     saveIngredients(ingredients);
-    notifyListeners();
+    notifyAll();
   }
 }

@@ -193,7 +193,7 @@ class _ItemCartState extends State<ItemCart> {
                                     ingredient,
                                     Provider.of<MenuProvider>(context,
                                             listen: false)
-                                        .ingredients[ingredient]!),
+                                        .ingredients[ingredient]![0]),
                           ],
                         ),
                       ),

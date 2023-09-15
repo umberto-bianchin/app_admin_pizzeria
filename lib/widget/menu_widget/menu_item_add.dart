@@ -334,7 +334,7 @@ class _MenuAddState extends State<MenuAdd> {
           addIngredients(
               ingredient,
               Provider.of<MenuProvider>(context, listen: false)
-                  .ingredients[ingredient]!);
+                  .ingredients[ingredient]![0]);
         },
         style: OutlinedButton.styleFrom(
           shape: RoundedRectangleBorder(

@@ -13,6 +13,7 @@ class DataItem {
     required this.category,
     this.important = false,
     this.quantity = 1,
+    this.available = true,
   });
 
   NetworkImage image;
@@ -23,11 +24,11 @@ class DataItem {
   final UniqueKey key;
   int quantity;
   bool important;
+  bool available;
 
   String get dataName => name;
 
   void addIngredients(String ingredient) {
-    
     ingredients.add(ingredient);
   }
 
@@ -37,12 +38,12 @@ class DataItem {
       DataItem baseItem = Provider.of<MenuProvider>(context, listen: false)
           .menu
           .firstWhere((element) => element.name == name);
-      
-      
 
       for (String ingredient in ingredients) {
         if (!baseItem.ingredients.contains(ingredient)) {
-          price = price + Provider.of<MenuProvider>(context, listen: false).ingredients[ingredient]!;
+          price = price +
+              Provider.of<MenuProvider>(context, listen: false)
+                  .ingredients[ingredient]![0];
         }
       }
       return price * quantity;

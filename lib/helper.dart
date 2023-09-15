@@ -265,12 +265,13 @@ void saveMenu(List<DataItem> menu) {
   final Map<String, dynamic> jsonMenu = {};
 
   for (DataItem item in menu) {
-    jsonMenu[item.name] = {
+    jsonMenu[item.name.toLowerCase()] = {
       "price": item.initialPrice,
       "ingredients": item.ingredients.join(', '),
       "category": item.category.name,
       "imageUrl": item.image.url,
       "important": item.important,
+      "available": item.available,
     };
   }
 
@@ -307,22 +308,20 @@ Future<List<DataItem>> getMenu() async {
   return menu;
 }
 
-void saveIngredients(Map<String, double> ingredients) {
+void saveIngredients(Map<String, List<dynamic>> ingredients) {
   firestoreInstance.collection("menu").doc("ingredients").set(ingredients);
 }
 
-Future<Map<String, double>> getSavedIngredients() async {
+Future<Map<String, List<dynamic>>> getSavedIngredients() async {
   final snapshot = await FirebaseFirestore.instance
       .collection('menu')
       .doc("ingredients")
       .get();
 
-  Map<String, double> ingredientsMap = {};
-  if (snapshot.data() != null) {
+  Map<String, List<dynamic>> ingredientsMap = {};
+  if (snapshot.data() != null && snapshot.data()!.isNotEmpty) {
     snapshot.data()!.forEach((key, value) {
-      if (value is num) {
-        ingredientsMap[key] = value.toDouble();
-      }
+      ingredientsMap[key] = [value[0].toDouble(), value[1]];
     });
   }
 
