@@ -41,8 +41,9 @@ class MenuProvider with ChangeNotifier {
       }
     } else {
       for (DataItem item in menu) {
-        if (item.ingredients.every(
-            (ingr) => ingredients.containsKey(ingr) && ingredients[ingr]![1])) {
+        if (item.ingredients.contains(ingredient) &&
+            item.ingredients.every((ingr) =>
+                ingredients.containsKey(ingr) && ingredients[ingr]![1])) {
           item.available = true;
         }
       }
