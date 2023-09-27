@@ -10,6 +10,8 @@ class OrdersProvider with ChangeNotifier {
   List<OrderData> _orders = [];
   final List<StreamSubscription<QuerySnapshot<Map<String, dynamic>>>> listener =
       [];
+  String openingTime = "";
+  String closingTime = "";
 
   List<OrderData> get orders => _orders;
 
@@ -82,5 +84,30 @@ class OrdersProvider with ChangeNotifier {
   void removeItem(OrderData order, DataItem item) {
     order.data.remove(item);
     notifyListeners();
+  }
+
+  void setTime(
+      BuildContext context, TimeOfDay? openTime, TimeOfDay? closeTime) async {
+    if (openTime == null) {
+      closingTime = closeTime!.format(context);
+    }
+    if (closeTime == null) {
+      openingTime = openTime!.format(context);
+    }
+
+    await FirebaseFirestore.instance.collection('menu').doc('settings').set({
+      'openingTime': openingTime,
+      'closingTime': closingTime,
+    });
+    notifyListeners();
+  }
+
+  void getTime() async {
+    final document = await FirebaseFirestore.instance
+        .collection('menu')
+        .doc('settings')
+        .get();
+    openingTime = document['openingTime'];
+    closingTime = document['closingTime'];
   }
 }

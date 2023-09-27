@@ -65,7 +65,6 @@ Future signIn(
       Provider.of<PageProvider>(context, listen: false)
           .changeStatus(LoginStatus.logged);
     }
-    //saveAdmin();
   } on FirebaseAuthException catch (e) {
     String error = e.code;
 
