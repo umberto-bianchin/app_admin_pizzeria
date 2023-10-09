@@ -5,6 +5,7 @@ import 'package:app_admin_pizzeria/responsive.dart';
 import 'package:app_admin_pizzeria/screens/maps_screen.dart';
 import 'package:app_admin_pizzeria/screens/menu_screen.dart';
 import 'package:app_admin_pizzeria/screens/order_screen.dart';
+import 'package:app_admin_pizzeria/widget/order_widget/opening_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -47,6 +48,8 @@ class MainScreen extends StatelessWidget {
                     padding: EdgeInsets.all(defaultPadding),
                     child: Header(),
                   ),
+                  if(index == 0)
+                  const OpeningTime(),
                   _displayed[index],
                 ],
               ),

@@ -18,7 +18,7 @@ final listDisplay = [const AuthScreen(), MainScreen()];
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
+    DeviceOrientation.landscapeRight,
   ]);
 
   await Firebase.initializeApp(
