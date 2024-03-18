@@ -37,7 +37,9 @@ class SideMenu extends StatelessWidget {
             press: () {
               provider.changePage(2);
             },
+
           ),
+          
         ],
       ),
     );

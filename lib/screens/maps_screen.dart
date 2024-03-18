@@ -70,7 +70,9 @@ Future<LatLng?> getAddressCoordinates(String address) async {
 
       return LatLng(location.latitude, location.longitude);
     }
-  } catch (e) {}
+  } catch (e) {
+    debugPrint(e.toString());
+  }
 
   return null;
 }

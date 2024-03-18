@@ -9,7 +9,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'data/data_item.dart';
@@ -254,9 +253,7 @@ void sendNotification(String title, String token) async {
       "token": token,
     });
   } catch (error) {
-    if (kDebugMode) {
-      print(error);
-    }
+    debugPrint(error.toString());
   }
 }
 
