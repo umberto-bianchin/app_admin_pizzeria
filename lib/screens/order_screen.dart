@@ -164,7 +164,7 @@ class OrderScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
-                          width: 155,
+                          width: 170,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.red),
@@ -172,12 +172,17 @@ class OrderScreen extends StatelessWidget {
                               submitOrder(context,
                                   order: order, accepted: false);
                             },
-                            child: const Text("Rifiuta ordine"),
+                            child: const Text(
+                              "Rifiuta ordine",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 10),
                         SizedBox(
-                          width: 155,
+                          width: 170,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: order.accepted == "False"
@@ -187,9 +192,14 @@ class OrderScreen extends StatelessWidget {
                               submitOrder(context,
                                   order: order, accepted: true);
                             },
-                            child: Text(order.accepted == "False"
-                                ? "Conferma ordine"
-                                : "Modifica ordine"),
+                            child: Text(
+                              order.accepted == "False"
+                                  ? "Conferma ordine"
+                                  : "Modifica ordine",
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                       ],

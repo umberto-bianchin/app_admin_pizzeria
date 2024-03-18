@@ -12,6 +12,7 @@ class SideMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<PageProvider>(context, listen: false);
     return Drawer(
+      backgroundColor: const Color.fromARGB(255, 202, 202, 202),
       child: ListView(
         children: [
           DrawerHeader(
@@ -37,9 +38,7 @@ class SideMenu extends StatelessWidget {
             press: () {
               provider.changePage(2);
             },
-
           ),
-          
         ],
       ),
     );

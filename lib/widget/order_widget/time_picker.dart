@@ -47,7 +47,10 @@ class _TimePickerState extends State<TimePicker> {
               widget.order.time = time!.to24hours();
             });
           },
-          child: const Text("Cambia orario"),
+          child: const Text(
+            "Cambia orario",
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
         ),
       ],
     );

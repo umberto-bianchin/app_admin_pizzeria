@@ -267,7 +267,7 @@ class _MenuAddState extends State<MenuAdd> {
                         Navigator.of(context).pop();
                       },
                       style: OutlinedButton.styleFrom(
-                        fixedSize: const Size(120, 20),
+                        fixedSize: const Size(125, 20),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
@@ -307,7 +307,7 @@ class _MenuAddState extends State<MenuAdd> {
                         Navigator.pop(context);
                       },
                       style: OutlinedButton.styleFrom(
-                        fixedSize: const Size(120, 20),
+                        fixedSize: const Size(125, 20),
                         backgroundColor: Colors.grey[350],
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
@@ -349,7 +349,7 @@ class _MenuAddState extends State<MenuAdd> {
             ),
             const SizedBox(width: 8),
             Text(
-              "+€${Provider.of<MenuProvider>(context, listen: false).ingredients[ingredient]!}",
+              "+€${Provider.of<MenuProvider>(context, listen: false).ingredients[ingredient]![0]}",
               style: TextStyle(color: Colors.grey[600], fontSize: 10),
             ),
           ],

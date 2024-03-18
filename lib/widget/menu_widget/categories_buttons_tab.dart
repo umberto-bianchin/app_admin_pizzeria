@@ -57,7 +57,7 @@ class CategoriesButton extends StatelessWidget {
         child: Container(
           alignment: Alignment.center,
           height: 40.0,
-          width: 120.0,
+          width: 130.0,
           padding: const EdgeInsets.all(10.0),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0), color: colore),

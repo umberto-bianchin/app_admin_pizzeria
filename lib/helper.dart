@@ -293,7 +293,7 @@ Future<List<DataItem>> getMenu() async {
           name: element,
           important: menuData[element]["important"],
           ingredients: menuData[element]["ingredients"].split(", "),
-          initialPrice: menuData[element]["price"],
+          initialPrice: menuData[element]["price"].toDouble(),
           category: category,
           image: NetworkImage(menuData[element]["imageUrl"]),
         ),

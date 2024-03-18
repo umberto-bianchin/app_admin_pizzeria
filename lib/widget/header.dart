@@ -75,7 +75,10 @@ class ProfileCard extends StatelessWidget {
             onPressed: () {
               logOut(context);
             },
-            child: const Text("Disconnettiti"),
+            child: const Text(
+              "Disconnettiti",
+              style: TextStyle(color: Colors.black),
+            ),
           ),
         ],
       ),
