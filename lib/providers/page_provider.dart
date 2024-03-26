@@ -6,7 +6,7 @@ enum LoginStatus { notLogged, logged }
 class PageProvider with ChangeNotifier {
   LoginStatus loginStatus = LoginStatus.notLogged;
   int selectedPage = 0;
-  Categories selectedCategory = Categories.pizza;
+  Categories selectedCategory = Categories.pizze;
   String page = "Ordini";
 
   String get getPage => page;

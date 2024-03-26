@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 enum Categories {
-  pizza,
+  pizze,
   bibite,
   panini,
   panari,
@@ -12,7 +12,7 @@ enum Categories {
 }
 
 final List<Pair> listCategories = [
-  Pair("assets/images/classic.png", Categories.pizza),
+  Pair("assets/images/classic.png", Categories.pizze),
   Pair("assets/images/mexican.png", Categories.panari),
   Pair("assets/images/burger.png", Categories.panini),
   Pair("assets/images/drink.png", Categories.bibite),

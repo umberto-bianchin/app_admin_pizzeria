@@ -22,7 +22,6 @@ class MapScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final orders = Provider.of<OrdersProvider>(context).orders;
-
     return Expanded(
         child: Padding(
       padding: const EdgeInsets.all(defaultPadding),
@@ -38,7 +37,7 @@ class MapScreen extends StatelessWidget {
                     ? GoogleMap(
                         myLocationEnabled: false,
                         markers: marker.data!,
-                        mapType: MapType.normal,
+                        mapType: MapType.terrain,
                         initialCameraPosition: _kGooglePlex,
                         onMapCreated: (GoogleMapController controller) {
                           _controller.complete(controller);
@@ -62,12 +61,12 @@ class MapScreen extends StatelessWidget {
 
 Future<LatLng?> getAddressCoordinates(String address) async {
   try {
+
     List<Location> locations =
         await locationFromAddress(address, localeIdentifier: "it_IT");
 
     if (locations.isNotEmpty) {
       Location location = locations[0];
-
       return LatLng(location.latitude, location.longitude);
     }
   } catch (e) {
@@ -90,9 +89,7 @@ Future<void> _addMarker(Set<Marker> markers, OrderData order) async {
   if (order.deliveryMethod == "Asporto") {
     return;
   }
-
   final LatLng? coordinates = await getAddressCoordinates(order.address);
-
   if (coordinates != null) {
     markers.add(
       Marker(
