@@ -76,7 +76,8 @@ class IngredientAdd extends StatelessWidget {
                         Navigator.of(context).pop();
                       },
                       style: OutlinedButton.styleFrom(
-                        fixedSize: const Size(120, 20),
+                        fixedSize: Size(MediaQuery.of(context).size.width / 12,
+                            MediaQuery.of(context).size.height / 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
@@ -100,12 +101,12 @@ class IngredientAdd extends StatelessWidget {
                         Provider.of<MenuProvider>(context, listen: false)
                             .addIngredient(nameController.text.toLowerCase(),
                                 double.parse(costController.text));
-                          
 
                         Navigator.pop(context);
                       },
                       style: OutlinedButton.styleFrom(
-                        fixedSize: const Size(120, 20),
+                        fixedSize: Size(MediaQuery.of(context).size.width / 12,
+                            MediaQuery.of(context).size.height / 12),
                         backgroundColor: Colors.grey[350],
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
