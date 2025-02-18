@@ -1,16 +1,17 @@
-# app_admin_pizzeria
+# App Admin Pizzeria
 
-A new Flutter project.
+## Authors
 
-## Getting Started
+* [@umberto-bianchin](https://www.https/github.com/umberto-bianchin)
+* [@ivanbrillo](https://www.github.com/ivanbrillo)
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Screenshots
+<p align="center">
+    <img src="src/images/aggiungi_pizza_gestionale.png" alt="Add" width="800">  
+</p>
+<p align="center">
+  <img src="src/images/ordini_gestionale.png" alt="Add" width="800">
+</p>
+<p align="center">
+  <img src="src/images/mappa_gestionale.png" alt="Menu" width="800">
+</p>
